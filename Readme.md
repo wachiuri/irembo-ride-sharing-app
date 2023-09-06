@@ -1,56 +1,56 @@
-##Overview
+# Overview
 This is a ride sharing app allowing irembo to onboard new dirvers and customers to request rides. It has 5 components
 
-##Requirements
+# Requirements
 Java version 17
 Nodejs version 14 and above
 Apache maven
 MySQL DBMS
 
-##Installation
+# Installation
 
-### Customer App
+## Customer App
 `cd customer-app`
 `npm install`
 
-### Driver App
+## Driver App
 `cd driver-app`
 `npm install`
 
-### Driver Onboarding
+## Driver Onboarding
 `cd driver-onboarding`
 `mvn install`
 
-## Driver Onboarding Frontend
+# Driver Onboarding Frontend
 `cd driver-onboarding-Frontend`
 `npm install`
 
-### Trip App
+## Trip App
 `cd trip`
 `mvn install`
 
 
-##Usage
+# Usage
 
-### Driver Onboarding
+## Driver Onboarding
 `cd driver-onboarding`
 `mvn spring-boot:run`
 
-### Trip App
+## Trip App
 `cd trip`
 `mvn spring-boot:run`
 
-### Customer App
+## Customer App
 `cd customer-app`
 `npm start`
 Visit http://localhost:4201 on your browser to use the customer app
 
-### Driver App
+## Driver App
 `cd driver-app`
 `npm start`
 Visit http://localhost:4202 on your browser to use the driver app
 
-##WW Driver Onboarding Frontend
+## Driver Onboarding Frontend
 `cd driver-onboarding-Frontend`
 `npm start`
 Visit http://localhost:4200 on your browser to use the app
