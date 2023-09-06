@@ -27,7 +27,7 @@ cd driver-onboarding
 mvn install
 ```
 
-# Driver Onboarding Frontend
+## Driver Onboarding Frontend
 ```
 cd driver-onboarding-Frontend
 npm install
