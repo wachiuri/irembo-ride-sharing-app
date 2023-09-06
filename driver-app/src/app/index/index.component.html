@@ -1,0 +1,16 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-5 offset-2 mt-5" style="height: 300px;">
+            <google-map *ngIf="apiLoaded | async" [options]="options">
+                <map-marker *ngFor="let markerPosition of markerPositions" [position]="markerPosition"
+                    [options]="markerOptions"></map-marker>
+                <map-directions-renderer *ngIf="(directionsResults$ | async) as directionsResults"
+                    [directions]="directionsResults"></map-directions-renderer>
+            </google-map>
+        </div>
+        <div class="col-5 mt-5">
+            <button class="btn btn-primary">Accept</button>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,85 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-5 offset-2 mt-5" style="height: 300px;">
+            <google-map *ngIf="apiLoaded | async" [options]="options">
+                <map-marker *ngFor="let markerPosition of markerPositions" [position]="markerPosition"
+                    [options]="markerOptions"></map-marker>
+            </google-map>
+        </div>
+        <div class="col-5 mt-5">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Request a Ride</h3>
+                </div>
+                <div class="col-12 mt-2">
+                    <input #fromLocationInput type="text" class="form-control" placeholder="From">
+                </div>
+                <div class="col-12 mt-2">
+                    <input #toLocationInput type="text" class="form-control" placeholder="To">
+                </div>
+                <div class="col-12 mt-2">
+                    <button (click)="request()" class="btn btn-primary">Request</button>
+                </div>
+            </div>
+            <div class="col-12 mt-5" *ngIf="matchedDriver">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>Name</td>
+                            <td>{{matchedDriver.name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>{{matchedDriver.email}}</td>
+                        </tr>
+                        <tr>
+                            <td>Phone Number</td>
+                            <td>{{matchedDriver.phoneNumber}}</td>
+                        </tr>
+                        <tr>
+                            <td>License Number</td>
+                            <td>{{matchedDriver.licenseNumber}}</td>
+                        </tr>
+                        <tr>
+                            <td>Vehicle Make</td>
+                            <td>{{matchedDriver.vehicleMake}}</td>
+                        </tr>
+                        <tr>
+                            <td>Vehicle Model</td>
+                            <td>{{matchedDriver.vehicleModel}}</td>
+                        </tr>
+                        <tr>
+                            <td>Vehicle Cc</td>
+                            <td>{{matchedDriver.vehicleCc}}</td>
+                        </tr>
+                        <tr>
+                            <td>Yom</td>
+                            <td>{{matchedDriver.yom}}</td>
+                        </tr>
+                        <tr>
+                            <td>Vehicle Color</td>
+                            <td>{{matchedDriver.vehicleColor}}</td>
+                        </tr>
+                        <tr>
+                            <td>Profile Picture</td>
+                            <td>{{matchedDriver.profilePicture}}</td>
+                        </tr>
+                        <tr>
+                            <td>Vehicle Image</td>
+                            <td>{{matchedDriver.vehicleImage}}</td>
+                        </tr>
+                        <tr>
+                            <td>Latitude</td>
+                            <td>{{matchedDriver.lat}}</td>
+                        </tr>
+                        <tr>
+                            <td>Longitude</td>
+                            <td>{{matchedDriver.lng}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

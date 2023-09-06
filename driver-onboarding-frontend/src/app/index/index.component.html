@@ -1,0 +1,167 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8 offset-2">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-primary">Drivers</h1>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button (click)="newDriver(formModal)" class="btn btn-primary">New</button>
+                </div>
+                <div class="col-12 mt-5 p-5 bg-light-subtle rounded border">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+                                <th>Vehicle Make</th>
+                                <th>Vehicle Model</th>
+                                <th>Year of Manufucture</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let driver of drivers.content">
+                                <td>
+                                    <button (click)="edit(driver,formModal)" class="btn btn-link">
+                                        {{driver.name}}
+                                    </button>
+                                </td>
+                                <td>{{driver.email}}</td>
+                                <td>{{driver.phoneNumber}}</td>
+                                <td>{{driver.vehicleMake}}</td>
+                                <td>{{driver.vehicleModel}}</td>
+                                <td>{{driver.yom}}</td>
+                                <td>
+                                    <button (click)="deleteDriver = driver; delete(deleteModal)"
+                                        class="btn text-danger btn-link">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+                                <th>Vehicle Make</th>
+                                <th>Vehicle Model</th>
+                                <th>Year of Manufucture</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="col-12 d-flex justify-content-end mt-3">
+                    <ngb-pagination [collectionSize]="drivers!.totalElements" [(page)]="page"
+                        [pageSize]="drivers!.size">
+                    </ngb-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #deleteModal let-modal>
+    <div class="modal-header bg-danger">
+        <h4 class="modal-title text-white" id="modal-basic-title">Delete Driver</h4>
+        <button tabindex="-1" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">Delete Driver {{deleteDriver.name}}?
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" (click)="submitDelete()">Delete</button>
+    </div>
+</ng-template>
+
+<ng-template #formModal let-modal>
+    <div class="modal-header bg-secondary">
+        <h4 class="modal-title text-white" id="modal-basic-title">Driver</h4>
+        <button tabindex="-1" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" [(ngModel)]="driver.name" />
+                </div>
+                <div class="col-6">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" class="form-control"
+                        [(ngModel)]="driver.phoneNumber" />
+                </div>
+                <div class="col-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" id="email" name="email" class="form-control" [(ngModel)]="driver.email" />
+                </div>
+                <div class="col-6">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" id="address" name="address" class="form-control" [(ngModel)]="driver.address" />
+                </div>
+                <div class="col-6">
+                    <label for="licenseNumber" class="form-label">Drivers License Number</label>
+                    <input type="text" id="licenseNumber" name="licenseNumber" class="form-control"
+                        [(ngModel)]="driver.licenseNumber" />
+                </div>
+                <div class="col-6">
+                    <label for="vehicleNumber" class="form-label">Vehicle Registration</label>
+                    <input type="text" id="vehicleNumber" name="vehicleNumber" class="form-control"
+                        [(ngModel)]="driver.vehicleNumber" />
+                </div>
+                <div class="col-6">
+                    <label for="vehicleMake" class="form-label">Make</label>
+                    <input type="text" id="vehicleMake" name="vehicleMake" class="form-control"
+                        [(ngModel)]="driver.vehicleMake" />
+                </div>
+                <div class="col-6">
+                    <label for="vehicleModel" class="form-label">Model</label>
+                    <input type="text" id="vehicleModel" name="vehicleModel" class="form-control"
+                        [(ngModel)]="driver.vehicleModel" />
+                </div>
+                <div class="col-6">
+                    <label for="yom" class="form-label">Year of Manufucture</label>
+                    <input type="text" id="yom" name="yom" class="form-control" [(ngModel)]="driver.yom" />
+                </div>
+                <div class="col-6">
+                    <label for="vehicleCc" class="form-label">Cc</label>
+                    <input type="text" id="vehicleCc" name="vehicleCc" class="form-control"
+                        [(ngModel)]="driver.vehicleCc" />
+                </div>
+                <div class="col-6">
+                    <label for="vehicleColor" class="form-label">Color</label>
+                    <input type="text" id="vehicleColor" name="vehicleColor" class="form-control"
+                        [(ngModel)]="driver.vehicleColor" />
+                </div>
+                <div class="col-6">
+                    <label for="profilePicture" class="form-label">Profile Picture</label>
+                    <input type="text" id="profilePicture" name="profilePicture" class="form-control"
+                        [(ngModel)]="driver.profilePicture" />
+                </div>
+                <div class="col-6">
+                    <label for="vehicleImage" class="form-label">Vehicle Image</label>
+                    <input type="text" id="vehicleImage" name="vehicleImage" class="form-control"
+                        [(ngModel)]="driver.vehicleImage" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div>
+            <p class="text-error">{{errorMessage}}</p>
+        </div>
+        <div>
+            <button (click)="save()" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</ng-template>
