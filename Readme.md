@@ -2,10 +2,10 @@
 This is a ride sharing app allowing irembo to onboard new dirvers and customers to request rides. It has 5 components
 
 # Requirements
-Java version 17
-Nodejs version 14 and above
-Apache maven
-MySQL DBMS
+Java version 17  
+Nodejs version 14 and above  
+Apache maven  
+MySQL DBMS  
 
 # Installation
 
