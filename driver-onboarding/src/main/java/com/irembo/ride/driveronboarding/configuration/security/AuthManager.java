@@ -1,5 +1,7 @@
 package com.irembo.ride.driveronboarding.configuration.security;
 
+import com.irembo.ride.driveronboarding.user.User;
+import com.irembo.ride.driveronboarding.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -30,7 +32,7 @@ public class AuthManager implements ReactiveAuthenticationManager {
     private JWTService jwtService;
 
     @Autowired
-    private ApplicationReactiveUserDetailsService userDetailsService;
+    private UserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -51,7 +53,7 @@ public class AuthManager implements ReactiveAuthenticationManager {
         if (firstIndexOfDot == -1 || (firstIndexOfDot == lastIndexOfDot)) {
             String userName = (String) authentication.getPrincipal();
 
-            return userDetailsService.findByUsername(userName)
+            return userService.findByEmail(userName)
                     .switchIfEmpty(Mono.error(new RuntimeException("User not found")))
                     .<Authentication>flatMap(user -> {
                         if (
@@ -74,14 +76,14 @@ public class AuthManager implements ReactiveAuthenticationManager {
             String jwtBearerToken = (String) authentication.getPrincipal();
             log.trace("authorizing {}", jwtBearerToken);
             if (jwtService.isValid(jwtBearerToken)) {
+                User user = jwtService.get(jwtBearerToken, User.class);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        authentication.getPrincipal(),
-                        authentication.getCredentials(),
+                        user.getEmail(),
+                        user.getPassword(),
                         List.of()
                 );
                 return Mono.just(usernamePasswordAuthenticationToken);
             } else {
-
                 return Mono.error(new RuntimeException("Invalid token"));
             }
         }

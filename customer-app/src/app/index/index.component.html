@@ -1,12 +1,16 @@
 <div class="container-fluid">
+
     <div class="row">
+        <div class="col-10  d-flex justify-content-end mt-5">
+            <button class="btn btn-light" (click)="logout()">Log out</button>
+        </div>
         <div class="col-5 offset-2 mt-5" style="height: 300px;">
             <google-map *ngIf="apiLoaded | async" [options]="options">
                 <map-marker *ngFor="let markerPosition of markerPositions" [position]="markerPosition"
                     [options]="markerOptions"></map-marker>
             </google-map>
         </div>
-        <div class="col-5 mt-5">
+        <div class="col-3 mt-5">
             <div class="row">
                 <div class="col-12">
                     <h3>Request a Ride</h3>

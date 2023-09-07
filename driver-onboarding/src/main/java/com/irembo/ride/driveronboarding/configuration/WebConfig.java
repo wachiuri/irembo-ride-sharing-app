@@ -12,7 +12,7 @@ public class WebConfig implements WebFluxConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
+                .allowedOrigins("http://localhost:4200", "http://localhost:4201","http://localhost:4202")
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true)

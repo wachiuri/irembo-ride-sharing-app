@@ -1,7 +1,7 @@
 package com.irembo.ride.driveronboarding.configuration.security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.irembo.ride.driveronboarding.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
@@ -37,11 +37,11 @@ public class JWTService {
     }
 
 
-    public String generateUser(User user) {
+    public String generate(String subject, Object data) {
 
         JwtBuilder builder = Jwts.builder()
-                .setSubject(user.getEmail())
-                .setClaims(convertToMap(user))
+                .setSubject(subject)
+                .setClaims(Map.of("data", convertToJson(data)))
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plus(15, ChronoUnit.DAYS)))
                 .signWith(key);
@@ -60,11 +60,20 @@ public class JWTService {
             try {
                 map.put(field.getName(), field.get(object));
             } catch (IllegalAccessException e) {
-                log.error("exception accessing field {} {}", field.getName(), e);
+                log.error("exception accessing field {}", field.getName(), e);
             }
         }
 
         return map;
+    }
+
+    private String convertToJson(Object object) {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            return "{}";
+        }
     }
 
     public String getUserID(String token) {
@@ -84,13 +93,21 @@ public class JWTService {
         return claims.getExpiration().after(Date.from(Instant.now()));
     }
 
-    public User getUser(String token) {
+    public <T> T get(String token, Class<T> type) {
         isValid(token);
         Claims claims = parser
                 .parseClaimsJws(token)
                 .getBody();
 
         ObjectMapper om = new ObjectMapper();
-        return om.convertValue(claims, User.class);
+
+        String data = claims.get("data", String.class);
+
+        try {
+            return om.readValue(data, type);
+        } catch (JsonProcessingException e) {
+            log.error("error reading json body", e);
+            return null;
+        }
     }
 }

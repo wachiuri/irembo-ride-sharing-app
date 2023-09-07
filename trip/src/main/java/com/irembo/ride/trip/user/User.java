@@ -1,5 +1,7 @@
 package com.irembo.ride.trip.user;
 
+import com.irembo.ride.trip.driver.Driver;
+import com.irembo.ride.trip.rider.Rider;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,20 +22,26 @@ public class User implements Serializable {
     @Email
     private String email;
 
+    private String phoneNumber;
+
     private String password;
 
     private String firstName;
 
     private String lastName;
 
-    private boolean active = true;
+    private String profilePicture;
 
-    private User createdBy;
+    private boolean active = true;
 
     private Instant createdDate;
 
-    private User modifiedBy;
-
     private Instant modifiedDate;
+
+    private UserType userType;
+
+    private Driver driver;
+
+    private Rider rider;
 
 }

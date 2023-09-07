@@ -1,5 +1,7 @@
 package com.irembo.ride.driveronboarding.user;
 
+import com.irembo.ride.driveronboarding.rider.Rider;
+import com.irembo.ride.driveronboarding.driver.Driver;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -34,11 +36,15 @@ public class User implements Serializable {
     @Column(name = "email")
     private String email;
 
+    private String phoneNumber;
+
     private String password;
 
     private String firstName;
 
     private String lastName;
+
+    private String profilePicture;
 
     private boolean active = true;
 
@@ -49,5 +55,16 @@ public class User implements Serializable {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Instant modifiedDate;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
+    @ManyToOne
+    @JoinColumn(name="driver_id")
+    private Driver driver;
+
+    @ManyToOne
+    @JoinColumn(name="rider_id")
+    private Rider rider;
 
 }

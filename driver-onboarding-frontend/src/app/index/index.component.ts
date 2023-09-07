@@ -3,6 +3,8 @@ import { Driver } from './Driver';
 import { Page } from '../lib/datatable/Page';
 import { IndexService } from './index.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
+import { LoginService } from '../login/login.service';
 
 @Component({
   selector: 'app-index',
@@ -11,7 +13,9 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 })
 export class IndexComponent implements OnInit {
 
+  private router: Router = inject(Router);
   private service: IndexService = inject(IndexService);
+  private loginService: LoginService= inject(LoginService);
   private modalService: NgbModal = inject(NgbModal);
   private modalRef!: NgbModalRef;
   driver!: Driver;
@@ -91,6 +95,11 @@ export class IndexComponent implements OnInit {
           this.errorMessage = error.message;
         }
       })
+  }
+
+  logout() {
+    this.loginService.logout();
+    this.router.navigate(['login']);
   }
 
 

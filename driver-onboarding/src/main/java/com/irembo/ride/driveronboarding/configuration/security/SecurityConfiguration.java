@@ -52,7 +52,6 @@ public class SecurityConfiguration {
                         )
                 )
                 .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-
         ;
 
         http.cors(corsSpec -> corsSpec.configurationSource(
@@ -60,7 +59,7 @@ public class SecurityConfiguration {
                     @Override
                     public CorsConfiguration getCorsConfiguration(ServerWebExchange exchange) {
                         CorsConfiguration corsConfig = new CorsConfiguration();
-                        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+                        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:4201","http://localhost:4202"));
                         corsConfig.setMaxAge(8000L);
                         corsConfig.setAllowedMethods(List.of("*"));
                         corsConfig.setAllowedHeaders(List.of("*"));

@@ -1,0 +1,18 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-4 offset-4 bg-light-subtle rounded border p-4" style="margin-top:14% ;">
+            <div class="mb-3">
+                <label for="username" class="form-label">Email</label>
+                <input type="text" id="username" name="username" class="form-control" value="" [(ngModel)]="username" />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" value="" [(ngModel)]="password" />
+            </div>
+            <div class="mb-3 d-flex justify-content-end mt-4">
+                <button (click)="login()" type="submit" class="btn btn-primary">Login</button>
+            </div>
+            <div class="mb-3 text-danger">{{errorMessage}}</div>
+        </div>
+    </div>
+</div>

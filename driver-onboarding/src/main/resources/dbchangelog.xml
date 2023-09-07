@@ -1,15 +1,2 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="Timothy Wachiuri (generated)" id="1693960040320-1">
-        <dropUniqueConstraint constraintName="unique_license_number" tableName="driver"/>
-    </changeSet>
-    <changeSet author="Timothy Wachiuri (generated)" id="1693960040320-2">
-        <addUniqueConstraint columnNames="licenseNumber" constraintName="unique_license_number" tableName="driver"/>
-    </changeSet>
-    <changeSet author="Timothy Wachiuri (generated)" id="1693960040320-3">
-        <dropUniqueConstraint constraintName="unique_phone_number" tableName="driver"/>
-    </changeSet>
-    <changeSet author="Timothy Wachiuri (generated)" id="1693960040320-4">
-        <addUniqueConstraint columnNames="phoneNumber" constraintName="unique_phone_number" tableName="driver"/>
-    </changeSet>
-</databaseChangeLog>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"/>

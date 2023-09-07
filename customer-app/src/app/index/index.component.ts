@@ -4,6 +4,8 @@ import { OnInit } from '@angular/core';
 import { Observable, catchError, combineLatestWith, concatMap, concatWith, from, map, of } from 'rxjs';
 import { IndexService } from './index.service';
 import { DriverLocation } from './DriverLocation';
+import { LoginService } from '../login/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -14,6 +16,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   private httpClient: HttpClient = inject(HttpClient);
   private service: IndexService = inject(IndexService);
+  private loginService: LoginService = inject(LoginService);
+  private router: Router = inject(Router);
 
   apiLoaded!: Observable<boolean>;
   options: google.maps.MapOptions = {
@@ -34,8 +38,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     console.log("on init");
-
-
   }
 
   ngAfterViewInit(): void {
@@ -78,7 +80,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
           }
         });
       });
-
   }
 
   request() {
@@ -107,8 +108,13 @@ export class IndexComponent implements OnInit, AfterViewInit {
       arrivalLatitude: this.toLocation.lat,
       arrivalLongitude: this.toLocation.lng
     })
-      .subscribe(a =>this.matchedDriver=a);
+      .subscribe(a => this.matchedDriver = a);
 
+  }
+
+  logout() {
+    this.loginService.logout();
+    this.router.navigate(['login']);
   }
 
 

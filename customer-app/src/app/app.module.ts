@@ -8,11 +8,17 @@ import { IndexComponent } from './index/index.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LoginComponent } from './login/login.component';
+import { LoginService } from './login/login.service';
+import { ApplicationHttpService } from './lib/http/application-http.service';
+import { IndexService } from './index/index.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
-    IndexComponent
+    IndexComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -21,9 +27,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     HttpClientJsonpModule,
     CommonModule,
-    NgbModule
+    NgbModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [
+    LoginService,
+    ApplicationHttpService,
+    IndexService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -10,6 +10,7 @@ import { LoginService } from './login/login.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { IndexService } from './index/index.service';
+import { ApplicationHttpService } from './lib/http/application-http.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { IndexService } from './index/index.service';
   providers: [
     LoginService,
     HttpClient,
-    IndexService
+    IndexService,
+    ApplicationHttpService
   ],
   bootstrap: [AppComponent]
 })
