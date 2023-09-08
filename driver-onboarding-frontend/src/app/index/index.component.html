@@ -28,14 +28,14 @@
                             <tr *ngFor="let driver of drivers.content">
                                 <td>
                                     <button (click)="edit(driver,formModal)" class="btn btn-link">
-                                        {{driver.name}}
+                                        {{driver.firstName}}&nbsp;{{driver.lastName}}
                                     </button>
                                 </td>
                                 <td>{{driver.email}}</td>
                                 <td>{{driver.phoneNumber}}</td>
-                                <td>{{driver.vehicleMake}}</td>
-                                <td>{{driver.vehicleModel}}</td>
-                                <td>{{driver.yom}}</td>
+                                <td>{{driver.driver!.vehicleMake}}</td>
+                                <td>{{driver.driver!.vehicleModel}}</td>
+                                <td>{{driver.driver!.yom}}</td>
                                 <td>
                                     <button (click)="deleteDriver = driver; delete(deleteModal)"
                                         class="btn text-danger btn-link">
@@ -76,7 +76,7 @@
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="col-md-12">Delete Driver {{deleteDriver.name}}?
+            <div class="col-md-12">Delete Driver {{deleteDriver.firstName}}&nbsp;{{deleteDriver.lastName}}?
             </div>
         </div>
     </div>
@@ -96,8 +96,12 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-6">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" id="name" name="name" class="form-control" [(ngModel)]="driver.name" />
+                    <label for="name" class="form-label">First Name</label>
+                    <input type="text" id="name" name="name" class="form-control" [(ngModel)]="driver.firstName" />
+                </div>
+                <div class="col-6">
+                    <label for="name" class="form-label">Last Name</label>
+                    <input type="text" id="name" name="name" class="form-control" [(ngModel)]="driver.lastName" />
                 </div>
                 <div class="col-6">
                     <label for="phoneNumber" class="form-label">Phone Number</label>
@@ -110,41 +114,41 @@
                 </div>
                 <div class="col-6">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" id="address" name="address" class="form-control" [(ngModel)]="driver.address" />
+                    <input type="text" id="address" name="address" class="form-control" [(ngModel)]="driver.driver!.address" />
                 </div>
                 <div class="col-6">
                     <label for="licenseNumber" class="form-label">Drivers License Number</label>
                     <input type="text" id="licenseNumber" name="licenseNumber" class="form-control"
-                        [(ngModel)]="driver.licenseNumber" />
+                        [(ngModel)]="driver.driver!.licenseNumber" />
                 </div>
                 <div class="col-6">
                     <label for="vehicleNumber" class="form-label">Vehicle Registration</label>
                     <input type="text" id="vehicleNumber" name="vehicleNumber" class="form-control"
-                        [(ngModel)]="driver.vehicleNumber" />
+                        [(ngModel)]="driver.driver!.licenseNumber" />
                 </div>
                 <div class="col-6">
                     <label for="vehicleMake" class="form-label">Make</label>
                     <input type="text" id="vehicleMake" name="vehicleMake" class="form-control"
-                        [(ngModel)]="driver.vehicleMake" />
+                        [(ngModel)]="driver.driver!.vehicleMake" />
                 </div>
                 <div class="col-6">
                     <label for="vehicleModel" class="form-label">Model</label>
                     <input type="text" id="vehicleModel" name="vehicleModel" class="form-control"
-                        [(ngModel)]="driver.vehicleModel" />
+                        [(ngModel)]="driver.driver!.vehicleModel" />
                 </div>
                 <div class="col-6">
                     <label for="yom" class="form-label">Year of Manufucture</label>
-                    <input type="text" id="yom" name="yom" class="form-control" [(ngModel)]="driver.yom" />
+                    <input type="text" id="yom" name="yom" class="form-control" [(ngModel)]="driver.driver!.yom" />
                 </div>
                 <div class="col-6">
                     <label for="vehicleCc" class="form-label">Cc</label>
                     <input type="text" id="vehicleCc" name="vehicleCc" class="form-control"
-                        [(ngModel)]="driver.vehicleCc" />
+                        [(ngModel)]="driver.driver!.vehicleCc" />
                 </div>
                 <div class="col-6">
                     <label for="vehicleColor" class="form-label">Color</label>
                     <input type="text" id="vehicleColor" name="vehicleColor" class="form-control"
-                        [(ngModel)]="driver.vehicleColor" />
+                        [(ngModel)]="driver.driver!.vehicleColor" />
                 </div>
                 <div class="col-6">
                     <label for="profilePicture" class="form-label">Profile Picture</label>
@@ -154,7 +158,7 @@
                 <div class="col-6">
                     <label for="vehicleImage" class="form-label">Vehicle Image</label>
                     <input type="text" id="vehicleImage" name="vehicleImage" class="form-control"
-                        [(ngModel)]="driver.vehicleImage" />
+                        [(ngModel)]="driver.driver!.vehicleImage" />
                 </div>
             </div>
         </div>

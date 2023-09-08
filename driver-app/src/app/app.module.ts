@@ -13,12 +13,16 @@ import { IndexService } from './index/index.service';
 import { ApplicationHttpService } from './lib/http/application-http.service';
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { RegisterService } from './register/register.service';
+import { AuthService } from './lib/http/auth.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +39,9 @@ import { LoginComponent } from './login/login.component';
     IndexService,
     HttpClient,
     IndexService,
-    ApplicationHttpService
+    ApplicationHttpService,
+    RegisterService,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })

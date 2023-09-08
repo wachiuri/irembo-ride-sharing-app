@@ -5,6 +5,8 @@ import { IndexService } from './index.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { LoginService } from '../login/login.service';
+import { User } from './User';
+import { UserType } from './UserType';
 
 @Component({
   selector: 'app-index',
@@ -15,12 +17,12 @@ export class IndexComponent implements OnInit {
 
   private router: Router = inject(Router);
   private service: IndexService = inject(IndexService);
-  private loginService: LoginService= inject(LoginService);
+  private loginService: LoginService = inject(LoginService);
   private modalService: NgbModal = inject(NgbModal);
   private modalRef!: NgbModalRef;
-  driver!: Driver;
-  deleteDriver!: Driver;
-  drivers: Page<Driver> = {
+  driver!: User;
+  deleteDriver!: User;
+  drivers: Page<User> = {
     content: [],
     totalElements: 0,
     totalPages: 0,
@@ -55,20 +57,26 @@ export class IndexComponent implements OnInit {
 
   newDriver(formModal: any) {
     this.driver = {
-      id: null,
-      name: "",
+      id: undefined,
+      firstName: "",
+      lastName: "",
       phoneNumber: "",
       email: "",
-      address: "",
-      licenseNumber: "",
-      vehicleNumber: "",
-      vehicleMake: "",
-      vehicleModel: "",
-      vehicleCc: "",
-      yom: 0,
-      vehicleColor: "",
       profilePicture: "",
-      vehicleImage: ""
+      active: true,
+      userType: UserType.DRIVER,
+      driver: {
+        id: undefined,
+        address: "",
+        licenseNumber: "",
+        vehicleMake: "",
+        vehicleModel: "",
+        vehicleCc: "",
+        yom: 0,
+        vehicleColor: "",
+        vehicleImage: "",
+      },
+      rider: undefined
     };
 
     this.modalRef = this.modalService.open(formModal, {
@@ -76,7 +84,7 @@ export class IndexComponent implements OnInit {
     });
   }
 
-  edit(driver: Driver, formModal: any) {
+  edit(driver: User, formModal: any) {
     this.driver = driver;
 
     this.modalRef = this.modalService.open(formModal, {
