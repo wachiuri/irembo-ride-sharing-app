@@ -1,6 +1,7 @@
 package com.irembo.ride.trip.configuration;
 
 //import com.irembo.ride.trip.configuration.websocket.ApplicationWebSocketHandler;
+import com.irembo.ride.trip.configuration.websocket.ApplicationWebSocketHandler;
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +19,8 @@ import java.util.Map;
 @EnableWebFlux
 public class WebConfig implements WebFluxConfigurer {
 
-    //@Getter
-    //private ApplicationWebSocketHandler applicationWebSocketHandler;
+    @Getter
+    private ApplicationWebSocketHandler applicationWebSocketHandler;
 
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
@@ -31,13 +32,13 @@ public class WebConfig implements WebFluxConfigurer {
                 .maxAge(3600);
     }
 
-    //@Bean
-    /*public HandlerMapping handlerMapping() {
+    @Bean
+    public HandlerMapping handlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
         this.applicationWebSocketHandler = new ApplicationWebSocketHandler();
         map.put("/websocket", applicationWebSocketHandler);
         int order = -1; // before annotated controllers
 
         return new SimpleUrlHandlerMapping(map, order);
-    }*/
+    }
 }

@@ -1,4 +1,9 @@
 <div class="container-fluid">
+    <div class="row mt-5">
+        <div class="col-9 d-flex justify-content-end">
+            <button class="btn btn-light" (click)="logout()">Logout</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-5 offset-2 mt-5" style="height: 300px;">
             <google-map *ngIf="apiLoaded | async" [options]="options">
@@ -9,7 +14,7 @@
             </google-map>
         </div>
         <div class="col-5 mt-5">
-            <button class="btn btn-primary">Accept</button>
+            <button (click)="update()" class="btn btn-primary">Update Location</button>
         </div>
     </div>
 </div>

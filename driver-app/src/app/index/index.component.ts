@@ -5,6 +5,8 @@ import { IndexService } from './index.service';
 import { DriverLocation } from './DriverLocation';
 import { Request } from './Request';
 import { Observable, catchError, combineLatest, combineLatestWith, map, of } from 'rxjs';
+import { ApplicationHttpService } from '../lib/http/application-http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -14,6 +16,8 @@ import { Observable, catchError, combineLatest, combineLatestWith, map, of } fro
 export class IndexComponent {
   private httpClient: HttpClient = inject(HttpClient);
   private service: IndexService = inject(IndexService);
+  private applicationHttpService: ApplicationHttpService = inject(ApplicationHttpService);
+  private router: Router = inject(Router);
 
   apiLoaded!: Observable<boolean>;
   options: google.maps.MapOptions = {
@@ -56,11 +60,21 @@ export class IndexComponent {
   }
 
   accept() {
-    if(this.request){
+    if (this.request) {
       this.service.accept(this.request)
-      .pipe(
-        combineLatestWith(this.service.list()),
-      ).subscribe();
+        .pipe(
+          combineLatestWith(this.service.list()),
+        ).subscribe();
     }
+  }
+
+  update(){
+    this.service.update();
+  }
+
+  logout() {
+    localStorage.setItem('accessToken', '');
+    this.applicationHttpService.setAccessToken('');
+    this.router.navigate(['login']);
   }
 }

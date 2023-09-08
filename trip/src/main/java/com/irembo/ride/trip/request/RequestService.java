@@ -26,16 +26,18 @@ public class RequestService {
 
     private List<Request> requests = new ArrayList<>();
 
+
     public Mono<DriverLocation> request(Request request) {
         //calculate driver to assign
         requests.add(request);
         try {
+
             H3Core h3Core = H3Core.newInstance();
 
             String address = h3Core.latLngToCellAddress(request.getDepartureLatitude(), request.getDepartureLongitude(), 1);
 
             log.trace("address {}", address);
-            Flux<DriverLocation> drivers = driverLocationService.list();
+            Flux<DriverLocation> drivers = driverLocationService.list().flatMap(d -> Flux.fromIterable(d.values()));
             return drivers
                     .filter(d -> {
                         log.trace("d {}", d);

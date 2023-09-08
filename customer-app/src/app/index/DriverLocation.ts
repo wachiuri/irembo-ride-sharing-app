@@ -1,16 +1,8 @@
+import { User } from "./User";
+
 export interface DriverLocation {
-    id: number,
-    name: string,
-    email: string,
-    phoneNumber: string,
-    licenseNumber: string,
-    vehicleMake: string,
-    vehicleModel: string,
-    vehicleCc: string,
-    yom: number,
-    vehicleColor: string,
-    profilePicture: string,
-    vehicleImage: string,
-    lat: number,
-    lng: number
+    user: User
+    lat: number;
+    lng: number;
+    cellAddress: string;
 }

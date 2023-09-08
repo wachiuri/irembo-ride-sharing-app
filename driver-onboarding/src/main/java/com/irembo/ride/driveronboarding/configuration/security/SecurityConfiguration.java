@@ -35,7 +35,7 @@ public class SecurityConfiguration {
 
         http
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/login").permitAll()
+                        .pathMatchers("/login", "/user/register").permitAll()
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyExchange().authenticated()
                 )
@@ -59,7 +59,7 @@ public class SecurityConfiguration {
                     @Override
                     public CorsConfiguration getCorsConfiguration(ServerWebExchange exchange) {
                         CorsConfiguration corsConfig = new CorsConfiguration();
-                        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:4201","http://localhost:4202"));
+                        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:4201", "http://localhost:4202"));
                         corsConfig.setMaxAge(8000L);
                         corsConfig.setAllowedMethods(List.of("*"));
                         corsConfig.setAllowedHeaders(List.of("*"));

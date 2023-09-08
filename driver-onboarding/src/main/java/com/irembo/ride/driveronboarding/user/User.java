@@ -1,5 +1,6 @@
 package com.irembo.ride.driveronboarding.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.irembo.ride.driveronboarding.rider.Rider;
 import com.irembo.ride.driveronboarding.driver.Driver;
 import jakarta.persistence.*;
@@ -38,6 +39,7 @@ public class User implements Serializable {
 
     private String phoneNumber;
 
+    @JsonIgnore
     private String password;
 
     private String firstName;

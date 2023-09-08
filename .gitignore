@@ -3,3 +3,4 @@ driver-app/node_modules
 driver-onboarding/target
 driver-onboarding-frontend/node_modules
 trip/target
+messaging/target

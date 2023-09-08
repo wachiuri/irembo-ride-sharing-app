@@ -39,7 +39,7 @@ public class ApplicationServerAuthenticationSuccessHandler implements ServerAuth
                         String token = service.generate(t.getT2().getEmail(), t.getT2());
                         ObjectMapper om = new ObjectMapper();
 
-                        String body = om.writeValueAsString(new SuccessfulLoginResponse(token, 200));
+                        String body = om.writeValueAsString(new SuccessfulLoginResponse(t.getT2(), token, 200));
 
                         DataBuffer dataBuffer = DefaultDataBufferFactory
                                 .sharedInstance

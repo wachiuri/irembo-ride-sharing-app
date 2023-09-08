@@ -3,6 +3,8 @@ import { Observable, map } from 'rxjs';
 import { Router, UrlTree } from '@angular/router';
 import { ApplicationHttpService } from '../lib/http/application-http.service';
 import { LoginResponse } from './LoginResponse';
+import { User } from '../index/User';
+import { AuthService } from '../lib/http/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,9 @@ import { LoginResponse } from './LoginResponse';
 export class LoginService {
 
   private applicationHttpService: ApplicationHttpService = inject(ApplicationHttpService);
+  private authService: AuthService = inject(AuthService);
   private router = inject(Router);
+  private currentUser!: User;
 
   constructor() {
     const accessToken: string | null = localStorage.getItem('accessToken');
@@ -18,9 +22,11 @@ export class LoginService {
 
     if (accessToken != null) {
       this.applicationHttpService.setAccessToken(accessToken);
+      this.authService.setAccessToken(accessToken);
     }
     else {
       this.applicationHttpService.setAccessToken('');
+      this.authService.setAccessToken('')
     }
   }
 
@@ -29,23 +35,30 @@ export class LoginService {
     data.append('username', username);
     data.append('password', password);
 
-    return this.applicationHttpService.login(
+    return this.authService.post('/login',
       data
     )
       .pipe(
         map(
           (response: LoginResponse) => {
+            this.currentUser = response.user;
             localStorage.setItem('accessToken', response.token);
             this.applicationHttpService.setAccessToken(response.token);
+            this.authService.setAccessToken(response.token);
           }
         )
       )
       ;
   }
 
+  public getCurrentUser(): User {
+    return this.currentUser;
+  }
+
   logout() {
     localStorage.setItem('accessToken', '');
     this.applicationHttpService.setAccessToken('');
+    this.authService.setAccessToken('');
   }
 
   public canActivate(): boolean | UrlTree {

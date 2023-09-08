@@ -13,7 +13,7 @@ public class DriverLocationController {
 
     @GetMapping
     public Flux<DriverLocation> list() {
-        return service.list();
+        return service.list().flatMap(a -> Flux.fromIterable(a.values()));
     }
 
     @PutMapping

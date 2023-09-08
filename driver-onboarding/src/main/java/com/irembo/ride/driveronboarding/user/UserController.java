@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.security.Principal;
@@ -55,5 +56,18 @@ public class UserController extends BaseController {
     @GetMapping("/principal")
     public Principal principal(Principal principal) {
         return principal;
+    }
+
+    @GetMapping("/driver")
+    public Flux<User> driver(
+            @RequestParam(name = "page", defaultValue = "0") int pageIndex,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        return service.findByUserType(UserType.DRIVER, pageIndex, size);
+    }
+
+    @PostMapping("/register")
+    public Mono<User> register(@RequestBody @Valid User user) {
+        return service.save(user);
     }
 }

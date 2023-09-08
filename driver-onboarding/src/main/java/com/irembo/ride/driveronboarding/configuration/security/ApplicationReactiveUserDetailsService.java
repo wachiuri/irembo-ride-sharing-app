@@ -1,6 +1,6 @@
 package com.irembo.ride.driveronboarding.configuration.security;
 
-import com.irembo.ride.driveronboarding.user.UserRepository;
+import com.irembo.ride.driveronboarding.user.UserService;
 import com.irembo.ride.driveronboarding.userpermission.UserPermission;
 import com.irembo.ride.driveronboarding.userpermission.UserPermissionRepository;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ public class ApplicationReactiveUserDetailsService implements ReactiveUserDetail
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private UserPermissionRepository userPermissionRepository;
@@ -27,7 +27,7 @@ public class ApplicationReactiveUserDetailsService implements ReactiveUserDetail
 
         logger.debug("logging in with user name {}", email);
 
-        return userRepository.findByEmail(email)
+        return userService.findByEmail(email)
                 .zipWhen(u -> userPermissionRepository.findByUser(u).collectList())
                 .flatMap(tuple2 -> {
                     UserDetailsImpl userDetails = UserDetailsImpl.builder()

@@ -14,17 +14,21 @@ public class RequestController {
     private RequestService service;
 
     @PostMapping
-    private Mono<DriverLocation> request(@RequestBody Request request) {
+    public Mono<DriverLocation> request(@RequestBody Request request) {
         return service.request(request);
     }
 
     @GetMapping
-    private Flux<Request> list() {
+    public Flux<Request> list() {
         return Flux.fromArray(service.list().toArray(new Request[0]));
     }
 
     @PostMapping("/accept")
-    private Mono<Request> accept(Request request) {
+    public Mono<Request> accept(Request request) {
         return service.accept(request);
+    }
+
+    public void listen(){
+
     }
 }

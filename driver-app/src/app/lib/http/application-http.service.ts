@@ -76,17 +76,16 @@ export class ApplicationHttpService {
     });
   }
 
-  public login(form: URLSearchParams): Observable<any> {
-    return this.httpClient.post(this.loginUrl + '/login', form, {
+  public delete(endPoint: string): Observable<any> {
+    return this.httpClient.delete(this.serverUrl + this.normalizeEndpoint(endPoint), {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${this.accessToken}`
       }
     });
   }
 
-  public delete(endPoint: string): Observable<any> {
-    return this.httpClient.delete(this.serverUrl + this.normalizeEndpoint(endPoint), {
+  public put(endPoint: string, data: any): Observable<any> {
+    return this.httpClient.put(this.serverUrl + this.normalizeEndpoint(endPoint), data, {
       headers: {
         Authorization: `Bearer ${this.accessToken}`
       }

@@ -117,7 +117,4 @@ export class IndexComponent implements OnInit, AfterViewInit {
     this.router.navigate(['login']);
   }
 
-
-
-
 }

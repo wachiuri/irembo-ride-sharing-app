@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Driver {
 
+    private Long id;
+
     private String address;
 
     private String licenseNumber;

@@ -21,9 +21,9 @@ public class PhysicalNamingStrategy implements NamingStrategy {
 
         Assert.notNull(type, "Type must not be null");
 
-        if(type.isAnnotationPresent(Table.class)
-        && type.getAnnotation(Table.class).name()!=null
-        ){
+        if (type.isAnnotationPresent(Table.class)
+                && type.getAnnotation(Table.class).name() != null
+        ) {
             return type.getAnnotation(Table.class).name();
         }
 
@@ -37,42 +37,45 @@ public class PhysicalNamingStrategy implements NamingStrategy {
 
         logger.trace("getting column name for {}", property.getName());
         if (property instanceof BasicRelationalPersistentProperty) {
-            logger.trace("property is BasicRelationalPersistentProperty");
+//            logger.trace("property is BasicRelationalPersistentProperty");
 
             BasicRelationalPersistentProperty aProperty = (BasicRelationalPersistentProperty) property;
-            logger.debug("name {}", aProperty.getName());
-            logger.trace("is entity {}", aProperty.isEntity());
-            logger.trace("is association {}", aProperty.isAssociation());
-            logger.trace("getKeyColumn {}", aProperty.getKeyColumn());
-            logger.trace("is annotation present (ManyToOne) {}", aProperty.isAnnotationPresent(ManyToOne.class));
+//            logger.debug("name {}", aProperty.getName());
+//            logger.trace("is entity {}", aProperty.isEntity());
+//            logger.trace("is association {}", aProperty.isAssociation());
+//            logger.trace("getKeyColumn {}", aProperty.getKeyColumn());
+//            logger.trace("is annotation present (ManyToOne) {}", aProperty.isAnnotationPresent(ManyToOne.class));
 
             if (aProperty.isAnnotationPresent(ManyToOne.class)
                     && aProperty.isAnnotationPresent(JoinColumn.class)
             ) {
-                logger.debug("property has ManyToOne and JoinColumn annotations");
+//                logger.debug("property has ManyToOne and JoinColumn annotations");
                 logger.debug("returning {}", aProperty.findAnnotation(JoinColumn.class).name());
                 return aProperty.findAnnotation(JoinColumn.class).name();
             } else if (aProperty.isAnnotationPresent(ManyToOne.class)) {
-                logger.trace("property has ManyToOne annotation");
+//                logger.trace("property has ManyToOne annotation");
                 logger.trace("returning {}", aProperty.getName().concat("_id"));
                 return aProperty.getName().concat("_id");
             } else if (aProperty.isAnnotationPresent(Column.class)
                     && !aProperty.findAnnotation(Column.class).name().isEmpty()) {
-                logger.trace("property has Column annotation");
+//                logger.trace("property has Column annotation");
 
                 logger.trace("returning {}", aProperty.findAnnotation(Column.class).name());
                 return aProperty.findAnnotation(Column.class).name();
             }
 
+            logger.trace("returning {}", aProperty.getName());
             return aProperty.getName();
         } else if (property instanceof AnnotationBasedPersistentProperty) {
-            logger.trace("property is AnnotationBasedPersistentProperty");
+//            logger.trace("property is AnnotationBasedPersistentProperty");
 
+            logger.trace("returning {}", ((AnnotationBasedPersistentProperty) property).getName());
             return ((AnnotationBasedPersistentProperty) property).getName();
         } else {
-            logger.trace("property is {}", property.getClass().getName());
+//            logger.trace("property is {}", property.getClass().getName());
         }
 
+        logger.trace("returning {}", property.getName());
         return property.getName();
     }
 
