@@ -1,0 +1,92 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 offset-3 bg-light-subtle rounded border p-4" style="margin-top:14% ;">
+            <div class="row">
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Email</label>
+                        <input type="text" id="username" name="username" class="form-control" value=""
+                            [(ngModel)]="driver.email" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value=""
+                            [(ngModel)]="driver.phoneNumber" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" value=""
+                            [(ngModel)]="driver.firstName" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" value=""
+                            [(ngModel)]="driver.lastName" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" value=""
+                            [(ngModel)]="driver.driver.address" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="licenseNumber" class="form-label">License Plate Number</label>
+                        <input type="text" class="form-control" id="licenseNumber" name="licenseNumber" value=""
+                            [(ngModel)]="driver.driver.licenseNumber" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="vehicleMake" class="form-label">Vehicle Make</label>
+                        <input type="text" class="form-control" id="vehicleMake" name="vehicleMake" value=""
+                            [(ngModel)]="driver.driver.vehicleMake" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="vehicleModel" class="form-label">Vehicle Model</label>
+                        <input type="text" class="form-control" id="vehicleModel" name="vehicleModel" value=""
+                            [(ngModel)]="driver.driver.vehicleModel" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="vehicleCc" class="form-label">Vehicle Cc</label>
+                        <input type="text" class="form-control" id="vehicleCc" name="vehicleCc" value=""
+                            [(ngModel)]="driver.driver.vehicleCc" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="yom" class="form-label">Year of Manufucture</label>
+                        <input type="text" class="form-control" id="yom" name="yom" value=""
+                            [(ngModel)]="driver.driver.yom" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="vehicleColor" class="form-label">Vehicle Color</label>
+                        <input type="text" class="form-control" id="vehicleColor" name="vehicleColor" value=""
+                            [(ngModel)]="driver.driver.vehicleColor" />
+                    </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-end mt-4">
+                    <button (click)="register()" type="submit" class="btn btn-primary">Register</button>
+                </div>
+                <div class="mb-3 text-danger">{{errorMessage}}</div>
+                <div class="mb-3">
+                    <button routerLink="/login" class="btn btn-link">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
