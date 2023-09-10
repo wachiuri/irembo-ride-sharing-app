@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyExchange().authenticated()
                 )
+
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
@@ -51,7 +52,7 @@ public class SecurityConfiguration {
                                 new ApplicationServerAuthenticationFailureHandler()
                         )
                 )
-                .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHORIZATION)
         ;
 
         http.cors(corsSpec -> corsSpec.configurationSource(

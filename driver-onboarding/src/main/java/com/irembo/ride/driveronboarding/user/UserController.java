@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.security.Principal;
@@ -27,7 +26,7 @@ public class UserController extends BaseController {
     @PreAuthorize("hasAuthority('View User')")
     @GetMapping
     public Mono<Page<User>> findAll(
-            @RequestParam(name = "page", defaultValue = "0") int pageIndex,
+            @RequestParam(name = "pageIndex", defaultValue = "0") int pageIndex,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         return service.findAll(pageIndex, size);
@@ -59,8 +58,8 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/driver")
-    public Flux<User> driver(
-            @RequestParam(name = "page", defaultValue = "0") int pageIndex,
+    public Mono<Page<User>> driver(
+            @RequestParam(name = "pageIndex", defaultValue = "0") int pageIndex,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         return service.findByUserType(UserType.DRIVER, pageIndex, size);
@@ -69,5 +68,15 @@ public class UserController extends BaseController {
     @PostMapping("/register")
     public Mono<User> register(@RequestBody @Valid User user) {
         return service.save(user);
+    }
+
+    @PostMapping("/activate/{id}")
+    public Mono<Void> activate(@PathVariable("id") Long id) {
+        return service.activate(id);
+    }
+
+    @PostMapping("/deactivate/{id}")
+    public Mono<Void> deactivate(@PathVariable("id") Long id) {
+        return service.deactivate(id);
     }
 }

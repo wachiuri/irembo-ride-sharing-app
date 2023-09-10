@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { User } from '../index/User';
 import { UserType } from '../index/UserType';
 import { RegisterService } from './register.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -11,21 +12,21 @@ import { RegisterService } from './register.service';
 export class RegisterComponent {
 
   private service: RegisterService = inject(RegisterService);
+  private router: Router = inject(Router);
 
   driver: User = {
-    id: 0,
+    id: null,
     firstName: '',
     lastName: '',
     email: '',
+    password:'',
     phoneNumber: '',
     profilePicture: '',
     active: false,
     userType: UserType.DRIVER,
-    rider: {
-      id: 0
-    },
+    rider: null,
     driver: {
-      id: 0,
+      id: null,
       address: '',
       licenseNumber: '',
       vehicleMake: '',
@@ -39,8 +40,14 @@ export class RegisterComponent {
   }
 
   errorMessage: string = '';
+  successMessage: string = '';
 
   register() {
-    this.service.register(this.driver).subscribe();
+    this.successMessage = '';
+    this.errorMessage = '';
+    this.service.register(this.driver).subscribe(s => {
+      this.successMessage = "Registration successfull. Kindly wait for admin approval";
+      this.router.navigate(['login']);
+    });
   }
 }

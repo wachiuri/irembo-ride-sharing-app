@@ -1,11 +1,13 @@
 package com.irembo.ride.driveronboarding.base;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 public abstract class BaseService<T, ID> {
 
     protected abstract <S extends BaseRepository<T, ID>> S getRepository();

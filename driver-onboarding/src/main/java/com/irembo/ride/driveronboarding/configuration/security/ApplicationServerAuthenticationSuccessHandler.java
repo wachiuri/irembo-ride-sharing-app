@@ -2,6 +2,7 @@ package com.irembo.ride.driveronboarding.configuration.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.irembo.ride.driveronboarding.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class ApplicationServerAuthenticationSuccessHandler implements ServerAuth
                         httpHeaders.add("Content-Type", "application/json");
 
                         String token = service.generate(t.getT2().getEmail(), t.getT2());
-                        ObjectMapper om = new ObjectMapper();
+                        ObjectMapper om = new ObjectMapper().registerModule(new JavaTimeModule());
 
                         String body = om.writeValueAsString(new SuccessfulLoginResponse(t.getT2(), token, 200));
 
@@ -49,6 +50,7 @@ public class ApplicationServerAuthenticationSuccessHandler implements ServerAuth
                         log.error("error writing json body", e);
                         return Mono.empty();
                     }
-                });
+                })
+                ;
     }
 }

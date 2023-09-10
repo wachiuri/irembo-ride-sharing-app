@@ -7,6 +7,7 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 
 /**
  * Security Note 3 :
@@ -32,6 +33,6 @@ public class AuthConverter implements ServerAuthenticationConverter {
                 )
                 .filter(s -> s.startsWith("Bearer "))
                 .map(s -> s.substring(7))
-                .map(BearerToken::new);
+                .map(BearerTokenAuthenticationToken::new);
     }
 }

@@ -35,7 +35,7 @@ export class LoginService {
     data.append('username', username);
     data.append('password', password);
 
-    return this.authService.post('/login',
+    return this.authService.login('/login',
       data
     )
       .pipe(

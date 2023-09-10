@@ -1,3 +1,3 @@
-export interface Rider{
-    id:number;
+export interface Rider {
+    id: number | null;
 }

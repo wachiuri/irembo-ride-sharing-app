@@ -15,10 +15,8 @@ public class UserReadConverter implements Converter<Row, User> {
     @Override
     public User convert(Row source) {
 
-        new Throwable().printStackTrace();
-
         source.getMetadata().getColumnMetadatas().stream().map(
-                col -> "column ".concat(col.getName())
+                col -> "column ".concat(col.getName()).concat(" ").concat(source.get(col.getName(), col.getJavaType()) != null ? source.get(col.getName(), col.getJavaType()).toString() : "")
         ).forEach(log::trace);
 
         User user = new User();
@@ -30,26 +28,30 @@ public class UserReadConverter implements Converter<Row, User> {
         user.setLastName(source.get("lastName", String.class));
         user.setProfilePicture(source.get("profilePicture", String.class));
         user.setActive(source.get("active", Boolean.class));
-        user.setCreatedDate(source.get("createdDate", Instant.class));
-        user.setModifiedDate(source.get("modifiedDate", Instant.class));
+        user.setCreatedDate(source.get("createdDate") != null ? source.get("createdDate", Instant.class) : null);
+        user.setModifiedDate(source.get("createdDate") != null ? source.get("modifiedDate", Instant.class) : null);
         user.setUserType(source.get("userType", String.class) != null ? UserType.valueOf(source.get("userType", String.class)) : null);
-        Driver driver = Driver.builder()
-                .address(source.get("address", String.class))
-                .licenseNumber(source.get("licenseNumber", String.class))
-                .vehicleMake(source.get("vehicleMake", String.class))
-                .vehicleModel(source.get("vehicleModel", String.class))
-                .vehicleCc(Integer.parseInt(source.get("vehicleCc", String.class)))
-                .yom(source.get("yom", Integer.class))
-                .vehicleColor(source.get("vehicleColor", String.class))
-                .vehicleImage(source.get("vehicleImage", String.class))
-                .build();
-        driver.setId(source.get("driver_id", Long.class));
-        user.setDriver(driver);
 
-        Rider rider = new Rider();
-        rider.setId(source.get("rider_id", Long.class));
-        user.setRider(rider);
+        if (source.get("driver_id", Long.class) != null) {
+            Driver driver = Driver.builder()
+                    .address(source.get("address", String.class))
+                    .licenseNumber(source.get("licenseNumber", String.class))
+                    .vehicleMake(source.get("vehicleMake", String.class))
+                    .vehicleModel(source.get("vehicleModel", String.class))
+                    .vehicleCc(source.get("vehicleCc", String.class) != null ? Integer.parseInt(source.get("vehicleCc", String.class)) : null)
+                    .yom(source.get("yom", Integer.class))
+                    .vehicleColor(source.get("vehicleColor", String.class))
+                    .vehicleImage(source.get("vehicleImage", String.class))
+                    .build();
+            driver.setId(source.get("driver_id", Long.class));
+            user.setDriver(driver);
+        }
 
+        if (source.get("rider_id", Long.class) != null) {
+            Rider rider = new Rider();
+            rider.setId(source.get("rider_id", Long.class));
+            user.setRider(rider);
+        }
         return user;
 
     }

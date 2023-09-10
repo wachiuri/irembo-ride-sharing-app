@@ -40,41 +40,49 @@ public class AuthManager implements ReactiveAuthenticationManager {
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
 
+        log.trace("authentication {}", authentication);
+
+        new Throwable().printStackTrace();
+
         if (authentication == null) {
             return Mono.empty();
         }
 
         log.trace("principal {} credentials {}", authentication.getPrincipal(), authentication.getCredentials());
 
-        int firstIndexOfDot = ((String) authentication.getPrincipal()).indexOf(".");
+        int firstIndexOfDot = -1;
 
-        int lastIndexOfDot = ((String) authentication.getPrincipal()).lastIndexOf(".");
+        int lastIndexOfDot = -1;
+
+        if (authentication.getPrincipal() != null) {
+            firstIndexOfDot = ((String) authentication.getPrincipal()).indexOf(".");
+            lastIndexOfDot = ((String) authentication.getPrincipal()).lastIndexOf(".");
+        }
 
         if (firstIndexOfDot == -1 || (firstIndexOfDot == lastIndexOfDot)) {
             String userName = (String) authentication.getPrincipal();
 
+            log.trace("userName {}", userName);
+
             return userService.findByEmail(userName)
                     .switchIfEmpty(Mono.error(new RuntimeException("User not found")))
-                    .<Authentication>flatMap(user -> {
-                        if (
-                                passwordEncoder.matches(
-                                        (String) authentication.getCredentials(), user.getPassword()
-                                )) {
-                            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                                    authentication.getPrincipal(),
-                                    authentication.getCredentials(),
-                                    List.of()
-                            );
-                            return Mono.just(usernamePasswordAuthenticationToken);
-                        } else {
-                            return Mono.error(new RuntimeException("Invalid credentials"))
-                                    ;
-                        }
-
-                    });
+                    .filter(User::isActive)
+                    .switchIfEmpty(Mono.error(new RuntimeException("User is disabled")))
+                    .filter(user -> passwordEncoder.matches(
+                            (String) authentication.getCredentials(), user.getPassword()
+                    ))
+                    .switchIfEmpty(Mono.error(new RuntimeException("Invalid credentials")))
+                    .map(u -> new UsernamePasswordAuthenticationToken(u.getEmail(), u.getPassword(), List.of()))
+                    ;
         } else {
+
             String jwtBearerToken = (String) authentication.getPrincipal();
             log.trace("authorizing {}", jwtBearerToken);
+
+            if (jwtBearerToken == null) {
+                return Mono.empty();
+            }
+
             if (jwtService.isValid(jwtBearerToken)) {
                 User user = jwtService.get(jwtBearerToken, User.class);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
@@ -82,11 +90,11 @@ public class AuthManager implements ReactiveAuthenticationManager {
                         user.getPassword(),
                         List.of()
                 );
+
                 return Mono.just(usernamePasswordAuthenticationToken);
             } else {
                 return Mono.error(new RuntimeException("Invalid token"));
             }
         }
-
     }
 }

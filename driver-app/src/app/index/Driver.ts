@@ -1,5 +1,5 @@
 export interface Driver {
-    id: number;
+    id: number | null;
     address: string;
     licenseNumber: string;
     vehicleMake: string;

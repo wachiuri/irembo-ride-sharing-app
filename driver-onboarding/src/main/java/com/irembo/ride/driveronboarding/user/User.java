@@ -1,8 +1,7 @@
 package com.irembo.ride.driveronboarding.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.irembo.ride.driveronboarding.rider.Rider;
 import com.irembo.ride.driveronboarding.driver.Driver;
+import com.irembo.ride.driveronboarding.rider.Rider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -39,7 +38,6 @@ public class User implements Serializable {
 
     private String phoneNumber;
 
-    @JsonIgnore
     private String password;
 
     private String firstName;
@@ -48,7 +46,7 @@ public class User implements Serializable {
 
     private String profilePicture;
 
-    private boolean active = true;
+    private boolean active = false;
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -68,5 +66,4 @@ public class User implements Serializable {
     @ManyToOne
     @JoinColumn(name="rider_id")
     private Rider rider;
-
 }

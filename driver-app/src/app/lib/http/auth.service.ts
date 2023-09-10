@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Config } from './Config';
 import { Observable } from 'rxjs';
 import { Form } from '@angular/forms';
+import { LoginResponse } from 'src/app/login/LoginResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,15 @@ export class AuthService {
   public post(endPoint: string, data: any): Observable<any> {
     return this.httpClient.post(this.loginUrl + this.normalizeEndpoint(endPoint), data, {
       headers: {
+        Authorization: `Bearer ${this.accessToken}`
+      }
+    });
+  }
+
+  public login(endPoint: string, data: URLSearchParams): Observable<LoginResponse> {
+    return this.httpClient.post<LoginResponse>(this.loginUrl + this.normalizeEndpoint(endPoint), data, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${this.accessToken}`
       }
     });

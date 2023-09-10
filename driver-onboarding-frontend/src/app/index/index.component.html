@@ -18,9 +18,8 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone Number</th>
+                                <th>Active</th>
                                 <th>Vehicle Make</th>
-                                <th>Vehicle Model</th>
-                                <th>Year of Manufucture</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -33,13 +32,27 @@
                                 </td>
                                 <td>{{driver.email}}</td>
                                 <td>{{driver.phoneNumber}}</td>
-                                <td>{{driver.driver!.vehicleMake}}</td>
-                                <td>{{driver.driver!.vehicleModel}}</td>
-                                <td>{{driver.driver!.yom}}</td>
+                                <td>
+                                    <button (click)="deactivate(driver.id)" class="btn btn-sm btn-link"
+                                        *ngIf="driver.active">
+                                        <span class="material-symbols-outlined text-success">
+                                            check_circle
+                                        </span>
+                                    </button>
+                                    <button (click)="activate(driver.id)" class="btn btn-sm btn-link"
+                                        *ngIf="!driver.active">
+                                        <span class="material-symbols-outlined text-danger">
+                                            cancel
+                                        </span>
+                                    </button>
+                                </td>
+                                <td>{{driver.driver!?.vehicleMake}}</td>
                                 <td>
                                     <button (click)="deleteDriver = driver; delete(deleteModal)"
-                                        class="btn text-danger btn-link">
-                                        Delete
+                                        class="btn text-danger btn-sm">
+                                        <span class="material-symbols-outlined">
+                                            delete
+                                        </span>
                                     </button>
                                 </td>
                             </tr>
@@ -49,17 +62,16 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone Number</th>
+                                <th>Active</th>
                                 <th>Vehicle Make</th>
-                                <th>Vehicle Model</th>
-                                <th>Year of Manufucture</th>
                                 <th></th>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
                 <div class="col-12 d-flex justify-content-end mt-3">
-                    <ngb-pagination [collectionSize]="drivers!.totalElements" [(page)]="page"
-                        [pageSize]="drivers!.size">
+                    <ngb-pagination [collectionSize]="drivers!.totalElements" [(page)]="page" [pageSize]="drivers!.size"
+                        [rotate]="true" (pageChange)="refresh()" [maxSize]="10">
                     </ngb-pagination>
                 </div>
             </div>
@@ -114,7 +126,8 @@
                 </div>
                 <div class="col-6">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" id="address" name="address" class="form-control" [(ngModel)]="driver.driver!.address" />
+                    <input type="text" id="address" name="address" class="form-control"
+                        [(ngModel)]="driver.driver!.address" />
                 </div>
                 <div class="col-6">
                     <label for="licenseNumber" class="form-label">Drivers License Number</label>

@@ -39,7 +39,7 @@ export class IndexComponent implements OnInit {
   }
 
   refresh() {
-    this.service.listDrivers(this.page, this.size).subscribe(response => this.drivers = response);
+    this.service.listDrivers(this.page - 1, this.size).subscribe(response => this.drivers = response);
   }
 
   submitDelete() {
@@ -110,5 +110,20 @@ export class IndexComponent implements OnInit {
     this.router.navigate(['login']);
   }
 
+  activate(userId?: number) {
+    if(userId){
+      this.service.activate(userId).subscribe(response => {
+        this.refresh();
+      });
+    }
+  }
+
+  deactivate(userId?: number) {
+    if(userId){
+      this.service.deactivate(userId).subscribe(response => {
+        this.refresh();
+      });
+    }
+  }
 
 }

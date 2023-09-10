@@ -26,7 +26,12 @@ export class LoginComponent {
           this.router.navigate(['/']);
         },
         error: (error: HttpErrorResponse) => {
-          error.status === 401 ? this.errorMessage = "Invalid username or password" : this.errorMessage = error.message;
+          if (error.error.message) {
+            this.errorMessage = error.error.message;
+          }
+          else {
+            error.status === 401 ? this.errorMessage = "Invalid username or password" : this.errorMessage = error.message;
+          }
         }
       })
       ;
