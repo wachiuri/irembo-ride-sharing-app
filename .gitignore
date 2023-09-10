@@ -1,7 +1,7 @@
-customer-app/node_modules
+rider-app/node_modules
 driver-app/node_modules
-driver-onboarding/target
-driver-onboarding-frontend/node_modules
-trip/target
-messaging/target
+administrative-backend/target
+administrative-frontend/node_modules
+rider-backend/target
+rider-app/node_modules
 ride-sharing-todo.txt

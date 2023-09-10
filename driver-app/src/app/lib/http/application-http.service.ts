@@ -12,7 +12,7 @@ export class ApplicationHttpService {
 
   private accessToken: string = '';
   private httpClient: HttpClient = inject(HttpClient);
-  private serverUrl: string = 'http://localhost:8091';
+  private serverUrl: string = 'http://localhost:8092';
   private loginUrl: string = 'http://localhost:8090';
 
   constructor() {

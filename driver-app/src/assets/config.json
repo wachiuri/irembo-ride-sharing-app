@@ -1,4 +1,4 @@
 {
-    "serverUrl": "http://localhost:8091",
+    "serverUrl": "http://localhost:8092",
     "loginUrl": "http://localhost:8090"
 }

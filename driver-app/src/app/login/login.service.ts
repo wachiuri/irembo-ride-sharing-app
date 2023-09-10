@@ -35,9 +35,7 @@ export class LoginService {
     data.append('username', username);
     data.append('password', password);
 
-    return this.authService.login('/login',
-      data
-    )
+    return this.authService.login('/login', data)
       .pipe(
         map(
           (response: LoginResponse) => {
