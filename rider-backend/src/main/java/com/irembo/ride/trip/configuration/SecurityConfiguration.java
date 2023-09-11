@@ -30,6 +30,7 @@ public class SecurityConfiguration {
 
         http.authorizeExchange(
                         exchanges -> exchanges.pathMatchers(HttpMethod.OPTIONS).permitAll()
+                                .pathMatchers("/websocket").permitAll()
                                 .anyExchange().authenticated()
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())

@@ -2,6 +2,7 @@ package com.irembo.ride.driver.driverlocation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.irembo.ride.driver.websocket.WebsocketMessage;
 import com.uber.h3core.H3Core;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class DriverLocationService {
         driverLocations.put(driverLocation.getUser().getId(), driverLocation);
 
         try {
-            kafkaTemplate.send("driverLocations", objectMapper.writeValueAsString(driverLocation));
+            kafkaTemplate.send("driverLocations", objectMapper.writeValueAsString(new WebsocketMessage("driverLocation", driverLocation)));
         } catch (JsonProcessingException e) {
             log.error("error writing json body", e);
             throw new RuntimeException(e);

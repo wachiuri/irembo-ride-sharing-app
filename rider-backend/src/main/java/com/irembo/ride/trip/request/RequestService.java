@@ -1,13 +1,18 @@
 package com.irembo.ride.trip.request;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.irembo.ride.trip.configuration.websocket.ApplicationWebSocketHandler;
 import com.irembo.ride.trip.driverlocation.DriverLocation;
 import com.irembo.ride.trip.driverlocation.DriverLocationService;
+import com.irembo.ride.trip.websocket.WebsocketMessage;
 import com.uber.h3core.H3Core;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,6 +28,9 @@ public class RequestService {
 
     @Autowired
     private DriverLocationService driverLocationService;
+
+    @Autowired
+    private ApplicationWebSocketHandler applicationWebSocketHandler;
 
     private List<Request> requests = new ArrayList<>();
 
@@ -86,7 +94,9 @@ public class RequestService {
                     )
                     .reduce((d1, d2) -> {
                                 log.trace("reduce d1 {} d2 {}", d1, d2);
-                                return this.shortestDistance(request, d1, d2);
+                                DriverLocation matched = this.shortestDistance(request, d1, d2);
+
+                                return matched;
                             }
                     )
                     ;

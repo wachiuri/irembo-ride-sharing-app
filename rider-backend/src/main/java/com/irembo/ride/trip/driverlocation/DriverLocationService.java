@@ -31,26 +31,9 @@ public class DriverLocationService {
         return Flux.just(driverLocations);
     }
 
-    public DriverLocation update(DriverLocation driverLocation) {
-
-        try {
-            H3Core h3Core = H3Core.newInstance();
-            driverLocation.setCellAddress(h3Core.latLngToCellAddress(driverLocation.getLat(), driverLocation.getLng(), 1));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        driverLocations.put(driverLocation.getUser().getId(), driverLocation);
-
-        try {
-            kafkaTemplate.send("driverLocations", objectMapper.writeValueAsString(driverLocation));
-        } catch (JsonProcessingException e) {
-            log.error("error writing json body", e);
-            throw new RuntimeException(e);
-        }
-
-        return driverLocation;
+    public Map<Long, DriverLocation> getDriverLocations() {
+        return driverLocations;
     }
+
+
 }

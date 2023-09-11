@@ -10,14 +10,4 @@ public class DriverLocationController {
 
     @Autowired
     private DriverLocationService service;
-
-    @GetMapping
-    public Flux<DriverLocation> list() {
-        return service.list().flatMap(a -> Flux.fromIterable(a.values()));
-    }
-
-    @PutMapping
-    public DriverLocation update(@RequestBody DriverLocation driverLocation) {
-        return service.update(driverLocation);
-    }
 }

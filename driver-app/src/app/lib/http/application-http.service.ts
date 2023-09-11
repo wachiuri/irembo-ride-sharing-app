@@ -14,6 +14,7 @@ export class ApplicationHttpService {
   private httpClient: HttpClient = inject(HttpClient);
   private serverUrl: string = 'http://localhost:8092';
   private loginUrl: string = 'http://localhost:8090';
+  private websocketUrl: string = 'ws://localhost:8092/websocket';
 
   constructor() {
     this.httpClient.get("/assets/config.json").subscribe((data: any) => {
@@ -33,6 +34,10 @@ export class ApplicationHttpService {
 
   public getAccessToken(): string {
     return this.accessToken;
+  }
+
+  public getWebsocketUrl(): string {
+    return this.websocketUrl;
   }
 
   private normalizeEndpoint(endPoint: string): string {

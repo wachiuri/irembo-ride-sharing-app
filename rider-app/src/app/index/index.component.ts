@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ViewChild, inject } from '@angular/core';
-import { OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { Observable, catchError, combineLatestWith, concatMap, concatWith, from, map, of } from 'rxjs';
 import { IndexService } from './index.service';
 import { DriverLocation } from './DriverLocation';
 import { LoginService } from '../login/login.service';
 import { Router } from '@angular/router';
+import { WebsocketService, Message } from './websocket.service';
 
 @Component({
   selector: 'app-index',
@@ -18,6 +18,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
   private service: IndexService = inject(IndexService);
   private loginService: LoginService = inject(LoginService);
   private router: Router = inject(Router);
+  private websocketService: WebsocketService = inject(WebsocketService);
 
   apiLoaded!: Observable<boolean>;
   options: google.maps.MapOptions = {
@@ -25,7 +26,9 @@ export class IndexComponent implements OnInit, AfterViewInit {
     zoom: 10
   };
   markerOptions: google.maps.MarkerOptions = { draggable: false };
-  markerPositions: google.maps.LatLng[] = [];
+  markerPositions: Iterable<google.maps.LatLng> = []
+  drivers: Map<number, google.maps.LatLng> = new Map();
+
 
   @ViewChild('fromLocationInput') fromLocationInput: any;
   @ViewChild('toLocationInput') toLocationInput: any;
@@ -35,27 +38,32 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   matchedDriver?: DriverLocation;
 
-
   ngOnInit(): void {
-    console.log("on init");
+    this.websocketService.messages.subscribe(msg => {
+      console.log("Response from websocket: ", msg);
+      switch (msg.source) {
+        case 'driverLocation':
+          const data = <DriverLocation>msg.data;
+
+          this.drivers.set(data.user.id, new google.maps.LatLng({
+            lat: data.lat,
+            lng: data.lng
+          })
+          );
+
+          this.markerPositions = this.drivers.values();
+          break;
+      }
+    });
   }
 
   ngAfterViewInit(): void {
     this.httpClient.jsonp('https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBFPD57hnSsdvhbC4_bjios8skFPqJxxl4', 'callback')
       .pipe(
-        map(() => true),
-        combineLatestWith(this.service.list())
+        map(() => true)
       )
       .subscribe(a => {
-        this.apiLoaded = of(a[0]);
-        console.log("driver locations ", a[1]);
-        this.markerPositions = a[1].map(b => new google.maps.LatLng({
-          lat: b.lat,
-          lng: b.lng
-        }));
-
-        console.log("marker positions ", this.markerPositions);
-
+        this.apiLoaded = of(a);
         const fromAutoComplete = new google.maps.places.Autocomplete(this.fromLocationInput.nativeElement);
 
         google.maps.event.addListener(fromAutoComplete, 'place_changed', () => {

@@ -16,6 +16,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { RegisterService } from './register/register.service';
 import { AuthService } from './lib/http/auth.service';
+import { WebsocketService } from './index/websocket.service'
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { AuthService } from './lib/http/auth.service';
     IndexService,
     ApplicationHttpService,
     RegisterService,
-    AuthService
+    AuthService,
+    WebsocketService
   ],
   bootstrap: [AppComponent]
 })

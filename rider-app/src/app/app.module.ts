@@ -13,6 +13,7 @@ import { LoginService } from './login/login.service';
 import { ApplicationHttpService } from './lib/http/application-http.service';
 import { IndexService } from './index/index.service';
 import { FormsModule } from '@angular/forms';
+import { WebsocketService } from './index/websocket.service';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { FormsModule } from '@angular/forms';
   providers: [
     LoginService,
     ApplicationHttpService,
-    IndexService
+    IndexService,
+    WebsocketService
   ],
   bootstrap: [AppComponent]
 })

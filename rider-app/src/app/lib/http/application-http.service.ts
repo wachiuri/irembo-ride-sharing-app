@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Form } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Config } from './Config';
 import { LoginResponse } from 'src/app/login/LoginResponse';
 
@@ -14,6 +14,7 @@ export class ApplicationHttpService {
   private httpClient: HttpClient = inject(HttpClient);
   private serverUrl: string = 'http://localhost:8091';
   private loginUrl: string = 'http://localhost:8090';
+  private websocketUrl: string = 'ws://localhost:8091/websocket';
 
   constructor() {
     this.httpClient.get("/assets/config.json").subscribe((data: any) => {
@@ -23,7 +24,15 @@ export class ApplicationHttpService {
         serverUrl = serverUrl.substring(0, serverUrl.length - 1);
       }
       this.serverUrl = serverUrl;
-      console.log(`serverUrl ${serverUrl}`);
+
+      let loginUrl = config.loginUrl;
+      if (loginUrl.endsWith("/")) {
+        loginUrl = loginUrl.substring(0, loginUrl.length - 1);
+      }
+      this.loginUrl = loginUrl;
+
+      this.websocketUrl = config.websocketUrl;
+
     });
   }
 
@@ -33,6 +42,10 @@ export class ApplicationHttpService {
 
   public getAccessToken(): string {
     return this.accessToken;
+  }
+
+  public getWebsocketUrl(): string {
+    return this.websocketUrl;
   }
 
   private normalizeEndpoint(endPoint: string): string {

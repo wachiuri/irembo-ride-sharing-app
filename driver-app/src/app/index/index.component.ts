@@ -7,6 +7,9 @@ import { Request } from './Request';
 import { Observable, catchError, combineLatest, combineLatestWith, map, of } from 'rxjs';
 import { ApplicationHttpService } from '../lib/http/application-http.service';
 import { Router } from '@angular/router';
+import { WebsocketService } from './websocket.service';
+import { DriverMatch } from './DriverMatch';
+import { MapDirectionsService } from '@angular/google-maps';
 
 @Component({
   selector: 'app-index',
@@ -18,6 +21,7 @@ export class IndexComponent {
   private service: IndexService = inject(IndexService);
   private applicationHttpService: ApplicationHttpService = inject(ApplicationHttpService);
   private router: Router = inject(Router);
+  private websocketService: WebsocketService = inject(WebsocketService);
 
   apiLoaded!: Observable<boolean>;
   options: google.maps.MapOptions = {
@@ -26,7 +30,8 @@ export class IndexComponent {
   };
   markerOptions: google.maps.MarkerOptions = { draggable: false };
   markerPositions: google.maps.LatLng[] = [];
-  directionsResults$: Observable<google.maps.DirectionsResult | undefined> | undefined;
+  directionsResults: Observable<google.maps.DirectionsResult | undefined> | undefined;
+  mapDirectionsService: MapDirectionsService = inject(MapDirectionsService);
 
   request: Request | undefined;
 
@@ -57,6 +62,33 @@ export class IndexComponent {
         return undefined;
       }));
 
+    this.websocketService.messages.subscribe(msg => {
+      console.log("Response from websocket: ", msg);
+      switch (msg.source) {
+        /*case 'driverLocation':
+          const data = <DriverLocation>msg.data;
+
+          this.drivers.set(data.user.id, new google.maps.LatLng({
+            lat: data.lat,
+            lng: data.lng
+          })
+          );
+
+          this.markerPositions = this.drivers.values();
+          break;*/
+
+        case 'driverMatch':
+          const driverMatch = <DriverMatch>msg.data;
+          const request: google.maps.DirectionsRequest = {
+            destination: { lat: driverMatch.request.arrivalLatitude, lng: driverMatch.request.arrivalLongitude },
+            origin: { lat: driverMatch.request.departureLatitude, lng: driverMatch.request.departureLongitude },
+            travelMode: google.maps.TravelMode.DRIVING
+          };
+          this.directionsResults = this.mapDirectionsService.route(request).pipe(map(response => response.result));
+          break;
+      }
+    })
+
   }
 
   accept() {
@@ -68,7 +100,7 @@ export class IndexComponent {
     }
   }
 
-  update(){
+  update() {
     this.service.update();
   }
 

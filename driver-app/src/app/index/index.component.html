@@ -12,7 +12,7 @@
             <google-map *ngIf="apiLoaded | async" [options]="options">
                 <map-marker *ngFor="let markerPosition of markerPositions" [position]="markerPosition"
                     [options]="markerOptions"></map-marker>
-                <map-directions-renderer *ngIf="(directionsResults$ | async) as directionsResults"
+                <map-directions-renderer *ngIf="(directionsResults | async) as directionsResults"
                     [directions]="directionsResults"></map-directions-renderer>
             </google-map>
         </div>
