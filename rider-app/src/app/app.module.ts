@@ -14,12 +14,15 @@ import { ApplicationHttpService } from './lib/http/application-http.service';
 import { IndexService } from './index/index.service';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from './index/websocket.service';
+import { RegisterComponent } from './register/register.component';
+import { RegisterService } from './register/register.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +38,8 @@ import { WebsocketService } from './index/websocket.service';
     LoginService,
     ApplicationHttpService,
     IndexService,
-    WebsocketService
+    WebsocketService,
+    RegisterService
   ],
   bootstrap: [AppComponent]
 })

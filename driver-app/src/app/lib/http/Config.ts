@@ -1,4 +1,5 @@
 export interface Config {
     serverUrl: string,
-    loginUrl: string
+    loginUrl: string,
+    websocketUrl: string
 }

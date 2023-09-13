@@ -2,6 +2,7 @@ package com.irembo.ride.driver.configuration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
+import java.util.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -36,12 +37,11 @@ public class JWTService {
         parser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
-
     public String generate(String subject, Object data) {
 
         JwtBuilder builder = Jwts.builder()
-                .setSubject(subject)
                 .setClaims(Map.of("data", convertToJson(data)))
+                .setSubject(subject)
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plus(15, ChronoUnit.DAYS)))
                 .signWith(key);
@@ -69,9 +69,12 @@ public class JWTService {
 
     private String convertToJson(Object object) {
         ObjectMapper om = new ObjectMapper();
+
+        om.registerModule(new JavaTimeModule());
         try {
             return om.writeValueAsString(object);
         } catch (JsonProcessingException e) {
+            log.error("error writing json body", e);
             return "{}";
         }
     }
@@ -103,6 +106,7 @@ public class JWTService {
 
         String data = claims.get("data", String.class);
 
+        om.registerModule(new JavaTimeModule());
         try {
             return om.readValue(data, type);
         } catch (JsonProcessingException e) {

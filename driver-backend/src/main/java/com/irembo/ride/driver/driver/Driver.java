@@ -1,5 +1,6 @@
 package com.irembo.ride.driver.driver;
 
+import com.irembo.ride.driver.base.BaseEntity;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Driver {
+public class Driver extends BaseEntity {
 
     private Long id;
 

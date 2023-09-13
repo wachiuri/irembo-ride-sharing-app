@@ -1,4 +1,5 @@
 {
     "serverUrl": "http://localhost:8092",
-    "loginUrl": "http://localhost:8090"
+    "loginUrl": "http://localhost:8090",
+    "websocketUrl":"ws://localhost:8090/websocket"
 }

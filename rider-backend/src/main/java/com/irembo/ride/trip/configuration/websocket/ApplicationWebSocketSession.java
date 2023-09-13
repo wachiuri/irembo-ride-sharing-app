@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
 
@@ -16,7 +15,7 @@ public class ApplicationWebSocketSession {
 
     private Long driverId;
 
-    private Long customerId;
+    private Long riderId;
 
     private WebSocketSession webSocketSession;
 

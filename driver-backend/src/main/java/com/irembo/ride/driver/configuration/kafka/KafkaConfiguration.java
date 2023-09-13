@@ -2,6 +2,7 @@ package com.irembo.ride.driver.configuration.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.irembo.ride.driver.configuration.websocket.ApplicationWebSocketHandler;
 import com.irembo.ride.driver.rider.DriverMatch;
 import com.irembo.ride.driver.websocket.WebsocketMessage;
@@ -39,9 +40,10 @@ public class KafkaConfiguration {
         try {
             log.trace("driverMatch kafka topic received {}", in);
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             WebsocketMessage websocketMessage = new ObjectMapper().readValue(in, WebsocketMessage.class);
             DriverMatch driverMatch = objectMapper.convertValue(websocketMessage.getData(), DriverMatch.class);
-            applicationWebSocketHandler.write(driverMatch.getDriverLocation().getUser().getId(), in);
+            applicationWebSocketHandler.write(driverMatch.getDriverLocation().getUser().getDriver().getId(), in);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

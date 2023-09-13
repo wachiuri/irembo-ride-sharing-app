@@ -5,3 +5,6 @@ administrative-frontend/node_modules
 rider-backend/target
 rider-app/node_modules
 ride-sharing-todo.txt
+/administrative-backend/nbproject/
+/driver-backend/nbproject/
+/rider-backend/nbproject/

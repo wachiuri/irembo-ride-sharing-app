@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Form } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, mergeMap } from 'rxjs';
 import { Config } from './Config';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class ApplicationHttpService {
 
   private accessToken: string = '';
   private httpClient: HttpClient = inject(HttpClient);
-  private serverUrl: string = 'http://localhost:8090';
+  private serverUrl: BehaviorSubject<string> = new BehaviorSubject('http://localhost:8090');
 
   constructor() {
     this.httpClient.get("/assets/config.json").subscribe((data: any) => {
@@ -20,7 +20,7 @@ export class ApplicationHttpService {
       if (serverUrl.endsWith("/")) {
         serverUrl = serverUrl.substring(0, serverUrl.length - 1);
       }
-      this.serverUrl = serverUrl;
+      this.serverUrl.next(serverUrl);
       console.log(`serverUrl ${serverUrl}`);
     });
   }
@@ -41,44 +41,55 @@ export class ApplicationHttpService {
   }
 
   public get(endPoint: string): Observable<any> {
-    return this.httpClient.get(this.serverUrl + this.normalizeEndpoint(endPoint), {
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`
-      }
-    });
+    return this.serverUrl
+      .pipe(
+        mergeMap(serverUrl => this.httpClient.get(serverUrl + this.normalizeEndpoint(endPoint), {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`
+          }
+        })));
   }
 
   public post(endPoint: string, data: any): Observable<any> {
-    return this.httpClient.post(this.serverUrl + this.normalizeEndpoint(endPoint), data, {
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`
-      }
-    });
+    return this.serverUrl
+      .pipe(
+        mergeMap(serverUrl => this.httpClient.post(serverUrl + this.normalizeEndpoint(endPoint), data, {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`
+          }
+        })));
   }
 
   public postForm(endPoint: string, form: Form): Observable<any> {
-    return this.httpClient.post(this.serverUrl + this.normalizeEndpoint(endPoint), form, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${this.accessToken}`
-      }
-    });
+    return this.serverUrl
+      .pipe(
+        mergeMap(serverUrl => this.httpClient.post(serverUrl + this.normalizeEndpoint(endPoint), form, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${this.accessToken}`
+          }
+        })));
   }
 
   public postUrlEncodedForm(endPoint: string, form: URLSearchParams): Observable<any> {
-    return this.httpClient.post(this.serverUrl + this.normalizeEndpoint(endPoint), form, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${this.accessToken}`
-      }
-    });
+    return this.serverUrl
+      .pipe(
+        mergeMap(serverUrl => this.httpClient.post(serverUrl + this.normalizeEndpoint(endPoint), form, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${this.accessToken}`
+          }
+        })));
   }
 
   public delete(endPoint: string): Observable<any> {
-    return this.httpClient.delete(this.serverUrl + this.normalizeEndpoint(endPoint), {
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`
-      }
-    });
+    return this.serverUrl
+      .pipe(
+        mergeMap(serverUrl => this.httpClient.delete(serverUrl + this.normalizeEndpoint(endPoint), {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${this.accessToken}`
+          }
+        })));
   }
 }

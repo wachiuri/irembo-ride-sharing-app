@@ -85,12 +85,14 @@ public class AuthManager implements ReactiveAuthenticationManager {
 
             if (jwtService.isValid(jwtBearerToken)) {
                 User user = jwtService.get(jwtBearerToken, User.class);
+                log.trace("validated user {}", user);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         user.getEmail(),
                         user.getPassword(),
                         List.of()
                 );
 
+                log.trace("usernamePasswordAuthenticationToken {}", usernamePasswordAuthenticationToken);
                 return Mono.just(usernamePasswordAuthenticationToken);
             } else {
                 return Mono.error(new RuntimeException("Invalid token"));

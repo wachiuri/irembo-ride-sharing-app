@@ -9,8 +9,10 @@
         </div>
         <div class="col-5 offset-2 mt-5" style="height: 300px;">
             <google-map *ngIf="apiLoaded | async" [options]="options">
-                <map-marker *ngFor="let markerPosition of markerPositions" [position]="markerPosition"
-                    [options]="markerOptions"></map-marker>
+                <map-marker #marker="mapMarker" *ngFor="let markerPosition of markerPositions; index as i"
+                    [position]="markerPosition" [options]="markerOptions"
+                    (mapClick)="openInfoWindow(i,marker)"></map-marker>
+                <map-info-window>{{infoWindowText}}</map-info-window>
             </google-map>
         </div>
         <div class="col-3 mt-5">
@@ -45,27 +47,27 @@
                         </tr>
                         <tr>
                             <td>License Number</td>
-                            <td>{{matchedDriver.user.driver.licenseNumber}}</td>
+                            <td>{{matchedDriver.user.driver!.licenseNumber}}</td>
                         </tr>
                         <tr>
                             <td>Vehicle Make</td>
-                            <td>{{matchedDriver.user.driver.vehicleMake}}</td>
+                            <td>{{matchedDriver.user.driver!.vehicleMake}}</td>
                         </tr>
                         <tr>
                             <td>Vehicle Model</td>
-                            <td>{{matchedDriver.user.driver.vehicleModel}}</td>
+                            <td>{{matchedDriver.user.driver!.vehicleModel}}</td>
                         </tr>
                         <tr>
                             <td>Vehicle Cc</td>
-                            <td>{{matchedDriver.user.driver.vehicleCc}}</td>
+                            <td>{{matchedDriver.user.driver!.vehicleCc}}</td>
                         </tr>
                         <tr>
                             <td>Yom</td>
-                            <td>{{matchedDriver.user.driver.yom}}</td>
+                            <td>{{matchedDriver.user.driver!.yom}}</td>
                         </tr>
                         <tr>
                             <td>Vehicle Color</td>
-                            <td>{{matchedDriver.user.driver.vehicleColor}}</td>
+                            <td>{{matchedDriver.user.driver!.vehicleColor}}</td>
                         </tr>
                         <tr>
                             <td>Profile Picture</td>
@@ -73,7 +75,7 @@
                         </tr>
                         <tr>
                             <td>Vehicle Image</td>
-                            <td>{{matchedDriver.user.driver.vehicleImage}}</td>
+                            <td>{{matchedDriver.user.driver?.vehicleImage}}</td>
                         </tr>
                         <tr>
                             <td>Latitude</td>

@@ -17,8 +17,7 @@ import java.security.Principal;
 @RequestMapping("/user")
 public class UserController extends BaseController {
 
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserService service;

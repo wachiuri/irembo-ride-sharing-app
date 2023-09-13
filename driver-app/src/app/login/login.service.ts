@@ -14,7 +14,7 @@ export class LoginService {
   private applicationHttpService: ApplicationHttpService = inject(ApplicationHttpService);
   private authService: AuthService = inject(AuthService);
   private router = inject(Router);
-  private currentUser!: User;
+  private currentUser: User | null = null;;
 
   constructor() {
     const accessToken: string | null = localStorage.getItem('accessToken');
@@ -22,11 +22,9 @@ export class LoginService {
 
     if (accessToken != null) {
       this.applicationHttpService.setAccessToken(accessToken);
-      this.authService.setAccessToken(accessToken);
     }
     else {
       this.applicationHttpService.setAccessToken('');
-      this.authService.setAccessToken('')
     }
   }
 
@@ -42,28 +40,34 @@ export class LoginService {
             this.currentUser = response.user;
             localStorage.setItem('accessToken', response.token);
             this.applicationHttpService.setAccessToken(response.token);
-            this.authService.setAccessToken(response.token);
           }
         )
       )
       ;
   }
 
-  public getCurrentUser(): User {
+  public getCurrentUser(): User | null {
     return this.currentUser;
   }
 
   logout() {
     localStorage.setItem('accessToken', '');
     this.applicationHttpService.setAccessToken('');
-    this.authService.setAccessToken('');
+    this.currentUser = null;
   }
 
   public canActivate(): boolean | UrlTree {
-    return this.applicationHttpService.getAccessToken().length > 0 ? true : this.router.parseUrl("/login");
+    return this.applicationHttpService.getAccessToken().length > 0 ? true : this.router.parseUrl("/login")
+      ;
   }
 
   public isLoggedIn(): boolean | UrlTree {
-    return this.applicationHttpService.getAccessToken().length > 0 ? this.router.parseUrl("/") : true;
+    return this.applicationHttpService.getAccessToken().length > 0 ? this.router.parseUrl("/") : true
+
+      ;
+  }
+
+  public principal():Observable<any>{
+    return this.authService.get('/principal');
   }
 }

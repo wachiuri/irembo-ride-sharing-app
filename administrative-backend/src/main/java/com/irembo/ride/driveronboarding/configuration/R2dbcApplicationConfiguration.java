@@ -1,5 +1,6 @@
 package com.irembo.ride.driveronboarding.configuration;
 
+import com.irembo.ride.driveronboarding.driver.DriverWriteConverter;
 import com.irembo.ride.driveronboarding.user.UserReadConverter;
 import com.irembo.ride.driveronboarding.user.UserWriteConverter;
 import io.r2dbc.spi.ConnectionFactories;
@@ -9,9 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
-import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
-import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.repository.query.QueryLookupStrategy;
 
 import java.util.List;
 
@@ -54,8 +52,8 @@ public class R2dbcApplicationConfiguration extends AbstractR2dbcConfiguration {
     @Override
     protected List<Object> getCustomConverters() {
         return List.of(
-                /*new DriverWriteConverter(),
-                new DriverReadConverter()*/
+                new DriverWriteConverter(),
+                /*new DriverReadConverter()*/
                 new UserReadConverter(),
                 new UserWriteConverter()
         );

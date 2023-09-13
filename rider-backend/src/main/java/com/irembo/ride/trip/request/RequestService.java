@@ -2,6 +2,7 @@ package com.irembo.ride.trip.request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.irembo.ride.trip.configuration.websocket.ApplicationWebSocketHandler;
 import com.irembo.ride.trip.driverlocation.DriverLocation;
 import com.irembo.ride.trip.driverlocation.DriverLocationService;
@@ -19,7 +20,9 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @Service
@@ -35,7 +38,53 @@ public class RequestService {
     private List<Request> requests = new ArrayList<>();
 
 
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Autowired
+    private ApplicationWebSocketHandler webSocketHandler;
+
+    private final Map<String, List<DriverLocation>> rejected = new HashMap<>();
+
+    public void rejected(String requestId, DriverLocation driverLocation) {
+        rejected.computeIfAbsent(requestId, k -> new ArrayList<>()).add(driverLocation);
+    }
+
+    public Mono<DriverLocation> match(Request request) {
+        return this.request(request)
+
+                .map(matched -> {
+
+                    log.trace("matcher {}", matched);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.registerModule(new JavaTimeModule());
+
+                    try {
+                        String message = objectMapper.writeValueAsString(new WebsocketMessage("driverMatch", new DriverMatch(DriverMatchStage.MATCH, request, matched)));
+
+                        kafkaTemplate.send("driverMatch", message);
+
+                        //send matching status to rider
+                        DriverMatch driverMatch = new DriverMatch(DriverMatchStage.MATCH, request, matched);
+                        String riderMessage = objectMapper.writeValueAsString(new WebsocketMessage("driverMatch", driverMatch));
+                        webSocketHandler.write(riderMessage);
+//                        webSocketHandler.write(riderMessage, request.getUser().getRider().getId());
+                    } catch (JsonProcessingException e) {
+                        log.error("error writing json object ", e);
+                        //throw new RuntimeException(e);
+                    }
+
+                    return matched;
+
+                });
+    }
+
     public Mono<DriverLocation> request(Request request) {
+
+        if (rejected.containsKey(request.getId()) && rejected.get(request.getId()).size() >= 5) {
+            return Mono.error(new RuntimeException("Driver not found"));
+        }
+
         //calculate driver to assign
         requests.add(request);
         try {
@@ -47,6 +96,7 @@ public class RequestService {
             log.trace("address {}", address);
             Flux<DriverLocation> drivers = driverLocationService.list().flatMap(d -> Flux.fromIterable(d.values()));
             return drivers
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
                     .filter(d -> {
                         log.trace("d {}", d);
                         return d.getCellAddress().equals(address);
@@ -163,22 +213,5 @@ public class RequestService {
 
     public Mono<Request> reject(Request request) {
         return Mono.just(request);
-    }
-
-    Flux<User> userFluxFromStringFlux(Flux<String> usernameFlux, Flux<String> firstnameFlux, Flux<String> lastnameFlux) {
-        return usernameFlux.zipWith(firstnameFlux, (r, s) -> new User(r, s, "")).zipWith(lastnameFlux, (t, u) -> new User(t.getUsername(), t.getFirstname(), u));
-    }
-
-    @Getter
-    class User {
-        private String username;
-        private String firstname;
-        private String lastname;
-
-        public User(String username, String firstname, String lastname) {
-            this.username = username;
-            this.firstname = firstname;
-            this.lastname = lastname;
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.irembo.ride.trip.request;
 
 import com.irembo.ride.trip.rider.Rider;
+import com.irembo.ride.trip.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Request {
 
-    private Rider rider;
+    private String id;
+
+    private User user;
 
     private Double departureLatitude;
 

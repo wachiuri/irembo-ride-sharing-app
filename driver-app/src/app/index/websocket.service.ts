@@ -22,15 +22,19 @@ export class WebsocketService {
   private httpService = inject(ApplicationHttpService);
 
   constructor() {
-    this.messages = <Subject<Message>>this.connect(this.httpService.getWebsocketUrl()).pipe(
-      map(
-          (response: MessageEvent): Message => {
+    this.httpService.getWebsocketUrl()
+      .subscribe(url => {
+        this.messages = <Subject<Message>>this.connect(url).pipe(
+          map(
+            (response: MessageEvent): Message => {
               console.log(response.data);
               let data = JSON.parse(response.data)
               return data;
-          }
-      )
-  );
+            }
+          )
+        );
+      })
+      ;
   }
 
   public connect(url: string): AnonymousSubject<MessageEvent> {

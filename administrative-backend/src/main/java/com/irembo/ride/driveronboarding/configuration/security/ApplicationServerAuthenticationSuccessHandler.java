@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 public class ApplicationServerAuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler {
 
     @Autowired
-    private JWTService service;
+    private JWTService jwtService;
 
     @Autowired
     private UserService userService;
@@ -37,11 +37,13 @@ public class ApplicationServerAuthenticationSuccessHandler implements ServerAuth
                         HttpHeaders httpHeaders = serverWebExchange.getResponse().getHeaders();
                         httpHeaders.add("Content-Type", "application/json");
 
-                        String token = service.generate(t.getT2().getEmail(), t.getT2());
+                        String token = jwtService.generate(t.getT2().getEmail(), t.getT2());
                         ObjectMapper om = new ObjectMapper().registerModule(new JavaTimeModule());
 
+                        om.registerModule(new JavaTimeModule());
                         String body = om.writeValueAsString(new SuccessfulLoginResponse(t.getT2(), token, 200));
 
+                        log.trace("body {}", body);
                         DataBuffer dataBuffer = DefaultDataBufferFactory
                                 .sharedInstance
                                 .wrap(body.getBytes());

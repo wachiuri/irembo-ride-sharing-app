@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DriverMatch {
 
+    private DriverMatchStage stage;
     private Request request;
     private DriverLocation driverLocation;
 }

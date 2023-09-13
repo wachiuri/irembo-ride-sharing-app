@@ -1,8 +1,7 @@
+import { User } from "./User";
+
 export interface Request {
-    customerId: number,
-    name: string,
-    phoneNumber: string,
-    email: string,
+    user: User | null,
     departureLatitude: number,
     departureLongitude: number,
     arrivalLatitude: number,

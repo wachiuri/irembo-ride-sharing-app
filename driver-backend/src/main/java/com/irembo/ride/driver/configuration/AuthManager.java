@@ -1,5 +1,7 @@
 package com.irembo.ride.driver.configuration;
 
+import com.irembo.ride.driver.user.User;
+import com.irembo.ride.driver.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -30,10 +32,15 @@ public class AuthManager implements ReactiveAuthenticationManager {
     private JWTService jwtService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
+
+        log.trace("authentication {}", authentication);
 
         if (authentication == null) {
             return Mono.empty();
@@ -41,24 +48,28 @@ public class AuthManager implements ReactiveAuthenticationManager {
 
         log.trace("principal {} credentials {}", authentication.getPrincipal(), authentication.getCredentials());
 
-        int firstIndexOfDot = ((String) authentication.getPrincipal()).indexOf(".");
-
-        int lastIndexOfDot = ((String) authentication.getPrincipal()).lastIndexOf(".");
 
         String jwtBearerToken = (String) authentication.getPrincipal();
         log.trace("authorizing {}", jwtBearerToken);
-        if (jwtService.isValid(jwtBearerToken)) {
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    authentication.getPrincipal(),
-                    authentication.getCredentials(),
-                    List.of()
-            );
-            return Mono.just(usernamePasswordAuthenticationToken);
-        } else {
 
-            return Mono.error(new RuntimeException("Invalid token"));
-
+        if (jwtBearerToken == null) {
+            return Mono.empty();
         }
 
+        if (jwtService.isValid(jwtBearerToken)) {
+            User user = jwtService.get(jwtBearerToken, User.class);
+            log.trace("validated user {}", user);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                    user.getEmail(),
+                    user.getPassword(),
+                    List.of()
+            );
+
+            log.trace("usernamePasswordAuthenticationToken {}", usernamePasswordAuthenticationToken);
+            return Mono.just(usernamePasswordAuthenticationToken);
+        } else {
+            return Mono.error(new RuntimeException("Invalid token"));
+        }
     }
+
 }

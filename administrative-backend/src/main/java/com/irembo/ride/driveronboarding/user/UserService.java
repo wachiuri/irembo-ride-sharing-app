@@ -45,15 +45,21 @@ public class UserService extends BaseService<User, Long> {
         return repository.findByUserType(userType, size, pageIndex * size)
                 .collectList()
                 .zipWith(repository.countByUserType(userType))
-                .map(t -> new PageImpl<>(t.getT1(), PageRequest.of(pageIndex + 1, size), t.getT2()));
+                .map(t -> {
+                    log.trace("total {}, count {}", t.getT2(), t.getT1().size());
+                    return new PageImpl<User>(t.getT1(), PageRequest.of(pageIndex, size), t.getT2());
+                });
     }
 
     @Override
     public Mono<User> save(User user) {
 
+        log.trace("saving user {}", user);
+
         return Mono.justOrEmpty(user)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("User cannot be null")))
                 .map(u -> {
+                            log.trace("encoding password");
                             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                             if (u.getId() == null) {
                                 u.setPassword(passwordEncoder.encode(u.getPassword()));

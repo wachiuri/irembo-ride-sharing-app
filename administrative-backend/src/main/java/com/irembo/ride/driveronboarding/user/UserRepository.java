@@ -48,6 +48,7 @@ public interface UserRepository extends BaseRepository<User, Long> {
     )
     public Flux<User> findByUserType(@Param("userType") UserType userType, @Param("size") int size, @Param("offset") int offset);
 
+    @Query("SELECT COUNT(*) FROM User WHERE userType = :userType")
     public Mono<Long> countByUserType(UserType userType);
 
     @Modifying

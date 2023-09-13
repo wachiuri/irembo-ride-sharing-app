@@ -2,6 +2,7 @@ package com.irembo.ride.trip.configuration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
@@ -69,6 +70,7 @@ public class JWTService {
 
     private String convertToJson(Object object) {
         ObjectMapper om = new ObjectMapper();
+        om.registerModule(new JavaTimeModule());
         try {
             return om.writeValueAsString(object);
         } catch (JsonProcessingException e) {
@@ -100,6 +102,7 @@ public class JWTService {
                 .getBody();
 
         ObjectMapper om = new ObjectMapper();
+        om.registerModule(new JavaTimeModule());
 
         String data = claims.get("data", String.class);
 

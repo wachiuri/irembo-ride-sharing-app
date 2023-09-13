@@ -1,7 +1,7 @@
 import { User } from "./User";
 
 export interface DriverLocation {
-    user: User
+    user: User | null;
     lat: number;
     lng: number;
     cellAddress: string;

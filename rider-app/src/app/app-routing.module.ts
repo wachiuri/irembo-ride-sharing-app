@@ -4,6 +4,7 @@ import { IndexComponent } from './index/index.component';
 import { LoginComponent } from './login/login.component';
 import { loggedInGuard } from './login/logged-in.guard';
 import { loginGuard } from './login/login.guard';
+import { RegisterComponent } from './register/register.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,11 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [loggedInGuard]
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
     canActivate: [loggedInGuard]
   }
 ];

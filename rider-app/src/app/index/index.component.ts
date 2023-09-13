@@ -6,15 +6,19 @@ import { DriverLocation } from './DriverLocation';
 import { LoginService } from '../login/login.service';
 import { Router } from '@angular/router';
 import { WebsocketService, Message } from './websocket.service';
+import { MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { ApplicationHttpService } from '../lib/http/application-http.service';
+import jwtDecode from 'jwt-decode';
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })
-export class IndexComponent implements OnInit, AfterViewInit {
+export class IndexComponent implements OnInit {
 
   private httpClient: HttpClient = inject(HttpClient);
+  private applicationHttpService: ApplicationHttpService = inject(ApplicationHttpService);
   private service: IndexService = inject(IndexService);
   private loginService: LoginService = inject(LoginService);
   private router: Router = inject(Router);
@@ -22,19 +26,24 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   apiLoaded!: Observable<boolean>;
   options: google.maps.MapOptions = {
-    center: { lat: -1.286389, lng: 36.817223 },
+    center: { lat: -1.9440727, lng: 30.0618851 },
     zoom: 10
   };
-  markerOptions: google.maps.MarkerOptions = { draggable: false };
-  markerPositions: Iterable<google.maps.LatLng> = []
+  markerOptions: google.maps.MarkerOptions = {
+    draggable: false
+  };
+  markerPositions: google.maps.LatLng[] = [];
   drivers: Map<number, google.maps.LatLng> = new Map();
-
+  driverLocations: Map<number, DriverLocation> = new Map();
+  infoWindowText: string = '';
 
   @ViewChild('fromLocationInput') fromLocationInput: any;
   @ViewChild('toLocationInput') toLocationInput: any;
 
   fromLocation!: google.maps.LatLngLiteral;
   toLocation!: google.maps.LatLngLiteral;
+
+  @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
 
   matchedDriver?: DriverLocation;
 
@@ -44,20 +53,25 @@ export class IndexComponent implements OnInit, AfterViewInit {
       switch (msg.source) {
         case 'driverLocation':
           const data = <DriverLocation>msg.data;
+          this.driverLocations.set(data.user.driver!.id, data);
 
-          this.drivers.set(data.user.id, new google.maps.LatLng({
-            lat: data.lat,
-            lng: data.lng
-          })
-          );
+          if (data.user.driver!.id != null) {
+            this.drivers.set(data.user.driver!.id, new google.maps.LatLng({
+              lat: data.lat,
+              lng: data.lng
+            })
+            );
+          }
 
-          this.markerPositions = this.drivers.values();
+          console.log('this.drivers', this.drivers);
+
+          this.markerPositions = [];
+          this.drivers.forEach(a => this.markerPositions.push(a));
+
           break;
       }
     });
-  }
 
-  ngAfterViewInit(): void {
     this.httpClient.jsonp('https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBFPD57hnSsdvhbC4_bjios8skFPqJxxl4', 'callback')
       .pipe(
         map(() => true)
@@ -90,6 +104,18 @@ export class IndexComponent implements OnInit, AfterViewInit {
       });
   }
 
+  openInfoWindow(index: number, mapMarker: MapMarker) {
+    console.log('index', index);
+    let i = 0;
+    this.driverLocations.forEach((a, b) => {
+      if (i === index) {
+        this.infoWindowText = a.user.firstName + ' ' + a.user.lastName;
+      }
+      i++;
+    });
+    this.infoWindow?.open(mapMarker);
+  }
+
   request() {
     this.showPath();
     this.match();
@@ -106,11 +132,12 @@ export class IndexComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    const decoded: any = jwtDecode(this.applicationHttpService.getAccessToken());
+
+    const user = JSON.parse(decoded.data);
+
     this.service.request({
-      customerId: 1,
-      name: "John Smith",
-      phoneNumber: "+254720874935",
-      email: "johnsmith@example.com",
+      user,
       departureLatitude: this.fromLocation.lat,
       departureLongitude: this.fromLocation.lng,
       arrivalLatitude: this.toLocation.lat,

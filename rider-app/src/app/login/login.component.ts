@@ -13,12 +13,12 @@ export class LoginComponent {
   service: LoginService = inject(LoginService);
   router: Router = inject(Router);
 
-  username: string = "";
-  password: string = "";
-  errorMessage: string = "";
+  username: string = '';
+  password: string = '';
+  errorMessage: string = '';
 
   login() {
-    this.errorMessage = "";
+    this.errorMessage = '';
     this.service.login(this.username, this.password)
       .subscribe({
         next: response => {
@@ -26,7 +26,12 @@ export class LoginComponent {
           this.router.navigate(['/']);
         },
         error: (error: HttpErrorResponse) => {
-          error.status === 401 ? this.errorMessage = "Invalid username or password" : this.errorMessage = error.message;
+          if (error.error.message) {
+            this.errorMessage = error.error.message;
+          }
+          else {
+            this.errorMessage = error.message;
+          }
         }
       })
       ;

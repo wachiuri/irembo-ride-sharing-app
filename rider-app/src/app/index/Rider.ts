@@ -1,3 +1,3 @@
 export interface Rider{
-    id:number;
+    id:number|null;
 }

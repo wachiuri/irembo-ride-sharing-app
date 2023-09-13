@@ -1,5 +1,6 @@
 package com.irembo.ride.driveronboarding.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.r2dbc.mapping.OutboundRow;
@@ -8,10 +9,13 @@ import org.springframework.r2dbc.core.Parameter;
 import java.time.Instant;
 
 @WritingConverter
+@Slf4j
 public class UserWriteConverter implements Converter<User, OutboundRow> {
 
     @Override
     public OutboundRow convert(User source) {
+
+        log.trace("converting {}", source);
 
         OutboundRow row = new OutboundRow();
 
@@ -32,6 +36,8 @@ public class UserWriteConverter implements Converter<User, OutboundRow> {
         if (source.getRider() != null) {
             row.put("rider_id", source.getRider() != null ? Parameter.fromOrEmpty(source.getRider().getId(), Long.class) : null);
         }
+
+        log.trace("converted {}", row);
         return row;
     }
 }

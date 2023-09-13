@@ -1,8 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, mergeMap } from 'rxjs';
 import { Router, UrlTree } from '@angular/router';
 import { ApplicationHttpService } from '../lib/http/application-http.service';
 import { LoginResponse } from './LoginResponse';
+import { HttpClient } from '@angular/common/http';
+import jwtDecode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +12,7 @@ import { LoginResponse } from './LoginResponse';
 export class LoginService {
 
   private applicationHttpService: ApplicationHttpService = inject(ApplicationHttpService);
+  private httpClient: HttpClient = inject(HttpClient);
   private router = inject(Router);
 
   constructor() {
@@ -35,12 +38,29 @@ export class LoginService {
       .pipe(
         map(
           (response: LoginResponse) => {
+            console.log('decoded token ', jwtDecode(response.token));
             localStorage.setItem('accessToken', response.token);
             this.applicationHttpService.setAccessToken(response.token);
           }
         )
       )
       ;
+  }
+
+  private normalizeEndpoint(endPoint: string): string {
+    if (!endPoint.startsWith("/")) {
+      endPoint = "/" + endPoint;
+    }
+    return endPoint;
+  }
+
+  public post(endPoint: string, data: any): Observable<any> {
+    return this.applicationHttpService.getLoginUrl().pipe(
+      mergeMap(loginUrl =>
+        this.httpClient.post(loginUrl + this.normalizeEndpoint(endPoint), data)
+      )
+
+    );
   }
 
   logout() {
