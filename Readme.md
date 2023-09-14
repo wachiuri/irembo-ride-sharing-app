@@ -7,6 +7,7 @@ Java JDK version 17
 Nodejs version 14 and above  
 Apache maven  
 MySQL RDBMS
+Apache kafka
 
 # Installation
 
@@ -47,6 +48,7 @@ mvn install
 ```
 
 # Usage on your PC
+Run Apache kafka as instructed in it's documentation
 
 ## Administrative Backend
 Open the file administrative-backend\src\main\resources\application.properties. Modify the configurations according to your environment as described in the file  
@@ -95,7 +97,7 @@ Visit http://localhost:4200 on your browser to use the app
 
 
 # Build for deployment
-
+Run Apache kafka on your server as instructed in it's documentation
 ## Rider app
 ```
 cd rider-app
