@@ -1,17 +1,18 @@
 # Overview
-This is a ride sharing app allowing irembo to onboard new dirvers and customers to request rides. It has 5 components
+This is a ride sharing app allowing irembo to onboard new dirvers and customers to request rides. It has 6 components
 
 # Requirements
-Java version 17  
+Install the following requirements before moving on
+Java JDK version 17  
 Nodejs version 14 and above  
 Apache maven  
-MySQL DBMS  
+MySQL RDBMS
 
 # Installation
 
-## Customer App
+## Rider App
 ```
-cd customer-app
+cd rider-app
 npm install
 ```
 
@@ -21,36 +22,52 @@ cd driver-app
 npm install
 ```
 
-## Driver Onboarding
+## Administrative Backend
 ```
-cd driver-onboarding
+cd administrative-backend
 mvn install
 ```
 
-## Driver Onboarding Frontend
+## Administrative Frontend
 ```
-cd driver-onboarding-Frontend
+cd administrative-frontend
 npm install
 ```
 
-## Trip App
+## Driver App
 ```
-cd trip
+cd driver-app
 mvn install
 ```
 
-
-# Usage
-
-## Driver Onboarding
+## Rider App
 ```
-cd driver-onboarding
+cd rider-app
+mvn install
+```
+
+# Usage on your PC
+
+## Administrative Backend
+Open the file administrative-backend\src\main\resources\application.properties. Modify the configurations according to your environment as described in the file  
+Open the file administrative-backend\src\main\resources\spring.properties. Modify the db configurations according to your environment  
+```
+cd administrative-backend
 mvn spring-boot:run
 ```
 
-## Trip App
+## Driver Backend
+Open the file driver-backend\src\main\resources\application.properties. Modify the configurations according to your environment as described in the file  
 ```
-cd trip
+cd driver-backend
+mvn spring-boot:run
+```
+
+
+## Rider Backend
+Open the file rider-backend\src\main\resources\application.properties. Modify the configurations according to your environment as described in the file  
+```
+cd rider-backend
 mvn spring-boot:run
 ```
 
@@ -70,10 +87,61 @@ npm start
 Visit http://localhost:4202 on your browser to use the driver app
 
 ## Driver Onboarding Frontend
-```cd driver-onboarding-Frontend
+```
+cd administrative-frontend
 npm start
 ```
 Visit http://localhost:4200 on your browser to use the app
 
 
+# Build for deployment
 
+## Rider app
+```
+cd rider-app
+ng build
+```
+Copy all contents of dist/customer-app folder to a web server document root
+
+## Driver app
+```
+cd driver-app
+ng build
+```
+Copy all contents of dist/driver-app folder to a web server document root
+
+## Administrative Frontend app
+```
+cd administrative-frontend
+ng build
+```
+Copy all contents of dist/driver-onboarding-frontend folder to a web server document root
+
+## Driver Backend
+```
+cd driver-backend
+mvn package
+```
+Upload the target/driver-backend-0.0.1-SNAPSHOT.jar file to server running java 17. Run 
+```
+java -jar driver-backend-0.0.1-SNAPSHOT.jar
+```
+
+## Rider Backend
+```
+cd rider-backend
+mvn package
+```
+Upload the target/rider-backend-0.0.1-SNAPSHOT.jar file to server running java 17. Run 
+```
+java -jar rider-backend-0.0.1-SNAPSHOT.jar
+```
+
+## Administrative Backend
+```
+cd administrative-backend
+mvn package
+```
+Upload the target/administrative-backend-0.0.1-SNAPSHOT.jar file to server running java 17. Run 
+```
+java -jar administrative-backend-0.0.1-SNAPSHOT.jar
