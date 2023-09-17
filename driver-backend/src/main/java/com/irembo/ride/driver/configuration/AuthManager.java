@@ -1,6 +1,5 @@
 package com.irembo.ride.driver.configuration;
 
-import com.irembo.ride.driver.user.User;
 import com.irembo.ride.driver.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,37 +38,13 @@ public class AuthManager implements ReactiveAuthenticationManager {
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-
-        log.trace("authentication {}", authentication);
-
-        if (authentication == null) {
-            return Mono.empty();
-        }
-
-        log.trace("principal {} credentials {}", authentication.getPrincipal(), authentication.getCredentials());
-
-
-        String jwtBearerToken = (String) authentication.getPrincipal();
-        log.trace("authorizing {}", jwtBearerToken);
-
-        if (jwtBearerToken == null) {
-            return Mono.empty();
-        }
-
-        if (jwtService.isValid(jwtBearerToken)) {
-            User user = jwtService.get(jwtBearerToken, User.class);
-            log.trace("validated user {}", user);
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    user.getEmail(),
-                    user.getPassword(),
-                    List.of()
-            );
-
-            log.trace("usernamePasswordAuthenticationToken {}", usernamePasswordAuthenticationToken);
-            return Mono.just(usernamePasswordAuthenticationToken);
-        } else {
-            return Mono.error(new RuntimeException("Invalid token"));
-        }
+        return Mono.justOrEmpty(authentication)
+                .map(Authentication::getPrincipal)
+                .cast(String.class)
+                .filter(s -> jwtService.isValid(s))
+                .switchIfEmpty(Mono.error(new RuntimeException("Invalid token")))
+                .flatMap(s -> Mono.just(new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), List.of())))
+                ;
     }
 
 }

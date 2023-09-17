@@ -1,0 +1,7 @@
+{
+	"ext": "java,properties",
+	"ignore": [
+		"target"
+	],
+	"delay": 2500
+}

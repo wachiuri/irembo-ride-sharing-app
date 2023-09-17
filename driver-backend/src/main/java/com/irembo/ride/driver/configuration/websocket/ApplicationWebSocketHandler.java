@@ -43,6 +43,7 @@ public class ApplicationWebSocketHandler implements WebSocketHandler {
                     a.setWebSocketSession(session);
                     return a;
                 })
+                .map(a -> sessions.add(a))
                 .flatMap(a -> session.receive().then());
     }
 
@@ -57,6 +58,13 @@ public class ApplicationWebSocketHandler implements WebSocketHandler {
 
         log.trace("no of open sessions {}", openSessions.size());
         sessions.stream().filter(s -> s.getDriverId().equals(driverId))
+                .filter(s -> s.getWebSocketSession().isOpen())
+                .forEach(s -> s.write(message));
+    }
+
+    public void write(String message) {
+        log.trace("session is open {}", sessions.stream().anyMatch(s -> s.getWebSocketSession().isOpen()));
+        sessions.stream().filter(s -> s.getWebSocketSession().isOpen())
                 .forEach(s -> s.write(message));
     }
 

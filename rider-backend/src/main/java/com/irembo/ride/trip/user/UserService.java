@@ -9,8 +9,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.security.Principal;
-
 @Service
 @Slf4j
 public class UserService {
@@ -19,14 +17,32 @@ public class UserService {
     private JWTService jwtService;
 
     public Mono<User> getCurrentUser() {
-
         return ReactiveSecurityContextHolder
                 .getContext()
+                .map(a -> {
+                    log.trace("context {}", a);
+                    return a;
+                })
                 .map(SecurityContext::getAuthentication)
+                .map(a -> {
+                    log.trace("authentication {}", a);
+                    return a;
+                })
                 .map(Authentication::getPrincipal)
-                .cast(Principal.class)
-                .map(Principal::getName)
+                .map(a -> {
+                    log.trace("principal {}", a);
+                    return a;
+                })
+                .cast(String.class)
+                .map(a -> {
+                    log.trace("casted to string {}", a);
+                    return a;
+                })
                 .flatMap(a -> Mono.just(jwtService.get(a, User.class)))
+                .map(a -> {
+                    log.trace("user {}", a);
+                    return a;
+                })
                 ;
     }
 }
