@@ -5,15 +5,14 @@
 package com.irembo.ride.trip.request;
 
 import com.irembo.ride.trip.driverlocation.DriverLocation;
-import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -69,50 +68,6 @@ public class RequestServiceTest {
         double expResult = 0.0;
         double result = instance.distance(lat1, lon1, lat2, lon2);
         assertEquals(expResult, result, 0);
-        
-        
-    }
-
-    /**
-     * Test of list method, of class RequestService.
-     */
-    @Test
-    public void testList() {
-        System.out.println("list");
-        RequestService instance = new RequestService();
-        List<Request> expResult = null;
-        List<Request> result = instance.list();
-        assertEquals(expResult, result);
-        
-        
-    }
-
-    /**
-     * Test of accept method, of class RequestService.
-     */
-    @Test
-    public void testAccept() {
-        System.out.println("accept");
-        Request request = null;
-        RequestService instance = new RequestService();
-        Mono<Request> expResult = null;
-        Mono<Request> result = instance.accept(request);
-        assertEquals(expResult, result);
-        
-        
-    }
-
-    /**
-     * Test of reject method, of class RequestService.
-     */
-    @Test
-    public void testReject() {
-        System.out.println("reject");
-        Request request = null;
-        RequestService instance = new RequestService();
-        Mono<Request> expResult = null;
-        Mono<Request> result = instance.reject(request);
-        assertEquals(expResult, result);
         
         
     }

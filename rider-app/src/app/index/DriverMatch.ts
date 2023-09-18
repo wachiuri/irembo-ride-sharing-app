@@ -11,5 +11,5 @@ export enum DriverMatchStage {
     MATCH,
     ACCEPT,
     REJECT,
-    DRIVER_NO_FOUND
+    DRIVER_NOT_FOUND
 }

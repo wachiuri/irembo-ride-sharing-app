@@ -30,6 +30,7 @@ public class AuthConverter implements ServerAuthenticationConverter {
                                 .getHeaders()
                                 .getFirst(HttpHeaders.AUTHORIZATION)
                 )
+                .switchIfEmpty(Mono.justOrEmpty("Bearer " + exchange.getRequest().getQueryParams().getFirst("token")))
                 .filter(s -> s.startsWith("Bearer "))
                 .map(s -> s.substring(7))
                 .map(BearerToken::new);

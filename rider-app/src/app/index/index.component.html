@@ -30,6 +30,15 @@
                     <button (click)="request()" class="btn btn-primary">Request</button>
                 </div>
             </div>
+            <div class="col-12 mt-5" *ngIf="driverMatch">
+                <div *ngIf="driverMatch.stage.toString()==='MATCH'">
+                    Requesting
+                    {{driverMatch.driverLocation.user.firstName}}&nbsp;{{driverMatch.driverLocation.user.lastName}}...
+                </div>
+                <div *ngIf="driverResponse===true">ACCEPTED</div>
+                <div *ngIf="driverResponse===false">REJECTED</div>
+                <div *ngIf="driverMatch.stage.toString()==='DRIVER_NOT_FOUND'">Driver Not Found. Try again</div>
+            </div>
             <div class="col-12 mt-5" *ngIf="matchedDriver">
                 <table class="table table-striped">
                     <tbody>

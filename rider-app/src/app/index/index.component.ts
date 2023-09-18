@@ -9,7 +9,8 @@ import { WebsocketService, Message } from './websocket.service';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { ApplicationHttpService } from '../lib/http/application-http.service';
 import jwtDecode from 'jwt-decode';
-
+import { DriverMatch, DriverMatchStage } from './DriverMatch';
+import {v4 as uuidv4} from 'uuid';
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
@@ -46,6 +47,8 @@ export class IndexComponent implements OnInit {
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
 
   matchedDriver?: DriverLocation;
+  driverMatch?: DriverMatch;
+  driverResponse: boolean | null = null;
 
   ngOnInit(): void {
     this.websocketService.messages.subscribe(msg => {
@@ -68,6 +71,12 @@ export class IndexComponent implements OnInit {
           this.markerPositions = [];
           this.drivers.forEach(a => this.markerPositions.push(a));
 
+          break;
+        case 'driverMatch':
+          this.driverMatch = <DriverMatch>msg.data;
+          console.log('this.driverMatch ', this.driverMatch);
+          console.log('stage accept', this.driverMatch.stage.toString() === 'ACCEPT', 'reject', this.driverMatch.stage.toString() === 'REJECT')
+          this.driverResponse = this.driverMatch.stage.toString() === 'ACCEPT' ? true : this.driverMatch.stage.toString() === 'REJECT' ? false : null;
           break;
       }
     });
@@ -137,6 +146,7 @@ export class IndexComponent implements OnInit {
     const user = JSON.parse(decoded.data);
 
     this.service.request({
+      id: uuidv4(),
       user,
       departureLatitude: this.fromLocation.lat,
       departureLongitude: this.fromLocation.lng,

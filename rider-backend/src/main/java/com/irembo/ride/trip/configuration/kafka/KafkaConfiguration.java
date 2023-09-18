@@ -8,6 +8,7 @@ import com.irembo.ride.trip.driverlocation.DriverLocation;
 import com.irembo.ride.trip.driverlocation.DriverLocationService;
 import com.irembo.ride.trip.request.DriverMatch;
 import com.irembo.ride.trip.request.DriverMatchStage;
+import com.irembo.ride.trip.request.DriverNotFoundException;
 import com.irembo.ride.trip.request.RequestService;
 import com.irembo.ride.trip.websocket.WebsocketMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
-
-import java.util.LinkedHashMap;
 
 @Configuration
 @Slf4j
@@ -69,6 +68,8 @@ public class KafkaConfiguration {
 
     @KafkaListener(id = "driverMatch", topics = "driverMatch")
     public void driverMatch(String in) {
+
+        log.trace("driverMatch kafka received message {}", in);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
@@ -78,14 +79,29 @@ public class KafkaConfiguration {
 
             if (driverMatch.getStage().equals(DriverMatchStage.ACCEPT) || driverMatch.getStage().equals(DriverMatchStage.REJECT)) {
 
-                applicationWebSocketHandler.write(in);
-//                applicationWebSocketHandler.write(in, driverMatch.getRequest().getUser().getRider().getId());
+//                applicationWebSocketHandler.write(in);
+                applicationWebSocketHandler.write(in, driverMatch.getRequest().getUser().getRider().getId());
 
-                if(driverMatch.getStage().equals(DriverMatchStage.REJECT)){
+                if (driverMatch.getStage().equals(DriverMatchStage.REJECT)) {
+                    log.trace("driverMatch is reject");
                     requestService.rejected(driverMatch.getRequest().getId(), driverMatch.getDriverLocation());
 
                     requestService.match(driverMatch.getRequest())
-                            .doOnError(e->log.error("error", e));
+                            .doOnError(DriverNotFoundException.class, driverNotFoundException -> {
+                                log.error("error", driverNotFoundException);
+                                driverMatch.setStage(DriverMatchStage.DRIVER_NOT_FOUND);
+                                try {
+                                    applicationWebSocketHandler.write(
+                                            objectMapper.writeValueAsString(
+                                                    new WebsocketMessage("driverMatch", driverMatch)
+                                            ),
+                                            driverMatch.getRequest().getUser().getRider().getId()
+                                    );
+                                } catch (JsonProcessingException e) {
+                                    log.error("JsonProcessingException", e);
+                                }
+                            })
+                            .subscribe(driverMatch1 -> log.trace("driverMatch {}", driverMatch1));
                     ;
                 }
 

@@ -118,6 +118,7 @@ export class IndexComponent {
 
   accept() {
     if (this.driverMatch) {
+      this.driverMatch.stage = DriverMatchStage.ACCEPT;
       this.service.accept(this.driverMatch)
         .subscribe(r => this.showRespondToDriverMatch = false);
     }
@@ -125,8 +126,13 @@ export class IndexComponent {
 
   reject() {
     if (this.driverMatch) {
+      this.driverMatch.stage = DriverMatchStage.REJECT;
       this.service.reject(this.driverMatch)
-        .subscribe(r => this.showRespondToDriverMatch = false);
+        .subscribe(r => {
+          this.driverMatch = null;
+          this.showRespondToDriverMatch = false;
+          this.directionsResults = undefined;
+        });
     }
   }
 
