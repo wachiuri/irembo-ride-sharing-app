@@ -10,9 +10,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -50,47 +50,6 @@ public class RequestControllerTest {
         Mono<DriverLocation> expResult = null;
         Mono<DriverLocation> result = instance.request(request);
         assertEquals(expResult, result);
-        
-        
-    }
-
-    /**
-     * Test of list method, of class RequestController.
-     */
-    @Test
-    public void testList() {
-        System.out.println("list");
-        RequestController instance = new RequestController();
-        Flux<Request> expResult = null;
-        Flux<Request> result = instance.list();
-        assertEquals(expResult, result);
-        
-        
-    }
-
-    /**
-     * Test of accept method, of class RequestController.
-     */
-    @Test
-    public void testAccept() {
-        System.out.println("accept");
-        Request request = null;
-        RequestController instance = new RequestController();
-        Mono<Request> expResult = null;
-        Mono<Request> result = instance.accept(request);
-        assertEquals(expResult, result);
-        
-        
-    }
-
-    /**
-     * Test of listen method, of class RequestController.
-     */
-    @Test
-    public void testListen() {
-        System.out.println("listen");
-        RequestController instance = new RequestController();
-        instance.listen();
         
         
     }

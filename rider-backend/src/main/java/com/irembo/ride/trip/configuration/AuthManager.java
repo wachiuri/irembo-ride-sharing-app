@@ -34,31 +34,12 @@ public class AuthManager implements ReactiveAuthenticationManager {
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-
-        if (authentication == null) {
-            return Mono.empty();
-        }
-
-        log.trace("principal {} credentials {}", authentication.getPrincipal(), authentication.getCredentials());
-
-        int firstIndexOfDot = ((String) authentication.getPrincipal()).indexOf(".");
-
-        int lastIndexOfDot = ((String) authentication.getPrincipal()).lastIndexOf(".");
-
-        String jwtBearerToken = (String) authentication.getPrincipal();
-        log.trace("authorizing {}", jwtBearerToken);
-        if (jwtService.isValid(jwtBearerToken)) {
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    authentication.getPrincipal(),
-                    authentication.getCredentials(),
-                    List.of()
-            );
-            return Mono.just(usernamePasswordAuthenticationToken);
-        } else {
-
-            return Mono.error(new RuntimeException("Invalid token"));
-
-        }
-
+        return Mono.justOrEmpty(authentication)
+                .map(Authentication::getPrincipal)
+                .cast(String.class)
+                .filter(s -> jwtService.isValid(s))
+                .switchIfEmpty(Mono.error(new RuntimeException("Invalid token")))
+                .flatMap(s -> Mono.just(new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), List.of())))
+                ;
     }
 }

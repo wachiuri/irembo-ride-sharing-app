@@ -24,7 +24,7 @@ export class WebsocketService {
   constructor() {
     this.httpService.getWebsocketUrl()
       .subscribe(url => {
-        this.messages = <Subject<Message>>this.connect(url).pipe(
+        this.messages = <Subject<Message>>this.connect(url+'?token='+this.httpService.getAccessToken()).pipe(
           map(
             (response: MessageEvent): Message => {
               console.log(response.data);

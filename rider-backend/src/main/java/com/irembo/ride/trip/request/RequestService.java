@@ -8,10 +8,7 @@ import com.irembo.ride.trip.driverlocation.DriverLocation;
 import com.irembo.ride.trip.driverlocation.DriverLocationService;
 import com.irembo.ride.trip.websocket.WebsocketMessage;
 import com.uber.h3core.H3Core;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -23,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 @Service
 @Slf4j
@@ -34,9 +30,6 @@ public class RequestService {
 
     @Autowired
     private ApplicationWebSocketHandler applicationWebSocketHandler;
-
-    private List<Request> requests = new ArrayList<>();
-
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -67,8 +60,8 @@ public class RequestService {
                         //send matching status to rider
                         DriverMatch driverMatch = new DriverMatch(DriverMatchStage.MATCH, request, matched);
                         String riderMessage = objectMapper.writeValueAsString(new WebsocketMessage("driverMatch", driverMatch));
-                        webSocketHandler.write(riderMessage);
-//                        webSocketHandler.write(riderMessage, request.getUser().getRider().getId());
+//                        webSocketHandler.write(riderMessage);
+                        webSocketHandler.write(riderMessage, request.getUser().getRider().getId());
                     } catch (JsonProcessingException e) {
                         log.error("error writing json object ", e);
                         //throw new RuntimeException(e);
@@ -82,11 +75,9 @@ public class RequestService {
     public Mono<DriverLocation> request(Request request) {
 
         if (rejected.containsKey(request.getId()) && rejected.get(request.getId()).size() >= 5) {
-            return Mono.error(new RuntimeException("Driver not found"));
+            return Mono.error(new DriverNotFoundException("Driver not found"));
         }
 
-        //calculate driver to assign
-        requests.add(request);
         try {
 
             H3Core h3Core = H3Core.newInstance();
@@ -187,31 +178,5 @@ public class RequestService {
     /* The function to convert radians into decimal */
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
-    }
-/*
-    private Mono<DriverLocation> match(Flux<DriverLocation> drivers, Mono<DriverLocation> matched) {
-
-        drivers.subscribe(new Consumer<DriverLocation>() {
-            @Override
-            public void accept(DriverLocation driverLocation) {
-                matched = Mono.just(driverLocation);
-            }
-        });
-
-        return matched;
-
-    }*/
-
-    public List<Request> list() {
-        return requests;
-    }
-
-    public Mono<Request> accept(Request request) {
-        requests.remove(request);
-        return Mono.just(request);
-    }
-
-    public Mono<Request> reject(Request request) {
-        return Mono.just(request);
     }
 }

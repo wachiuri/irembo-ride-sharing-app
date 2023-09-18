@@ -1,0 +1,7 @@
+{
+	"ignore": [
+		"**/dist/**"
+	],
+	"delay": 2500,
+	"ext": "ts,html"
+}

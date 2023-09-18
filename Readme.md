@@ -6,7 +6,7 @@ Install the following requirements before moving on
 Java JDK version 17  
 Nodejs version 14 and above  
 Apache maven  
-MySQL RDBMS
+MySQL RDBMS  
 Apache kafka
 
 # Installation

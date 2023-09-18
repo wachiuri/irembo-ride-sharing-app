@@ -32,25 +32,24 @@ public class ApplicationWebSocketHandler implements WebSocketHandler {
 
         log.trace("handling new session");
 
-        return Mono.just(new ApplicationWebSocketSession())
-                .map(a -> {
-                    a.setWebSocketSession(session);
-                    return a;
-                })
-                .map(a->sessions.add(a))
-                .flatMap(a -> session.receive().then());
-/*
+        userService.getCurrentUser().subscribe(a -> {
+            log.trace("user {}",a);
+        });
+
         return Mono.just(new ApplicationWebSocketSession())
                 .zipWith(userService.getCurrentUser())
                 .map(a -> {
                     log.trace("user {}",a.getT2());
                     log.trace("websocketsession {}",a.getT1());
                     a.getT1().setRiderId(a.getT2().getRider().getId());
-                    a.getT1().setWebSocketSession(session);
                     return a.getT1();
                 })
+                .map(a -> {
+                    a.setWebSocketSession(session);
+                    return a;
+                })
                 .map(a -> sessions.add(a))
-                .flatMap(a -> session.receive().then());*/
+                .flatMap(a -> session.receive().then());
     }
 
     public void write(String message) {
