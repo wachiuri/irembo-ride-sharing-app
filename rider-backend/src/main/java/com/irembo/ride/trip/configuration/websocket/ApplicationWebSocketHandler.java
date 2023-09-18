@@ -32,10 +32,6 @@ public class ApplicationWebSocketHandler implements WebSocketHandler {
 
         log.trace("handling new session");
 
-        userService.getCurrentUser().subscribe(a -> {
-            log.trace("user {}",a);
-        });
-
         return Mono.just(new ApplicationWebSocketSession())
                 .zipWith(userService.getCurrentUser())
                 .map(a -> {
