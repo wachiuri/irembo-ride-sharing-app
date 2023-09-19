@@ -79,7 +79,7 @@ public class RequestService {
     public Mono<DriverLocation> request(Request request) {
 
         if (rejected.containsKey(request.getId()) && rejected.get(request.getId()).size() >= 5) {
-            return Mono.error(new DriverNotFoundException("Driver not found"));
+            return Mono.error(new DriverNotFoundException("Driver Not Found"));
         }
 
         try {
@@ -135,11 +135,11 @@ public class RequestService {
                                     .flatMapMany(a -> driverLocationRepository.findByCellAddressIn(a))
                     )
                     .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
+                    .switchIfEmpty(Mono.error(new DriverNotFoundException("Driver Not Found")))
                     .reduce((d1, d2) -> {
                                 log.trace("reduce d1 {} d2 {}", d1, d2);
-                                DriverLocation matched = this.shortestDistance(request, d1, d2);
 
-                                return matched;
+                                return this.shortestDistance(request, d1, d2);
                             }
                     )
                     ;

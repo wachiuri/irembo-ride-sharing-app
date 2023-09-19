@@ -39,6 +39,9 @@
                 <div *ngIf="driverResponse===false">REJECTED</div>
                 <div *ngIf="driverMatch.stage.toString()==='DRIVER_NOT_FOUND'">Driver Not Found. Try again</div>
             </div>
+            <div class="col-12 mt-5">
+                <div class="text-danger">{{matchError}}</div>
+            </div>
             <div class="col-12 mt-5" *ngIf="matchedDriver">
                 <table class="table table-striped">
                     <tbody>
