@@ -10,7 +10,7 @@ import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { ApplicationHttpService } from '../lib/http/application-http.service';
 import jwtDecode from 'jwt-decode';
 import { DriverMatch, DriverMatchStage } from './DriverMatch';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
@@ -49,6 +49,7 @@ export class IndexComponent implements OnInit {
   matchedDriver?: DriverLocation;
   driverMatch?: DriverMatch;
   driverResponse: boolean | null = null;
+  matchError: string = '';
 
   ngOnInit(): void {
     this.websocketService.messages.subscribe(msg => {
@@ -77,6 +78,9 @@ export class IndexComponent implements OnInit {
           console.log('this.driverMatch ', this.driverMatch);
           console.log('stage accept', this.driverMatch.stage.toString() === 'ACCEPT', 'reject', this.driverMatch.stage.toString() === 'REJECT')
           this.driverResponse = this.driverMatch.stage.toString() === 'ACCEPT' ? true : this.driverMatch.stage.toString() === 'REJECT' ? false : null;
+          if (this.driverMatch.stage.toString() === 'DRIVER_NOT_FOUND') {
+            this.matchedDriver = undefined;
+          }
           break;
       }
     });
@@ -145,6 +149,8 @@ export class IndexComponent implements OnInit {
 
     const user = JSON.parse(decoded.data);
 
+    this.matchError = '';
+
     this.service.request({
       id: uuidv4(),
       user,
@@ -153,7 +159,10 @@ export class IndexComponent implements OnInit {
       arrivalLatitude: this.toLocation.lat,
       arrivalLongitude: this.toLocation.lng
     })
-      .subscribe(a => this.matchedDriver = a);
+      .subscribe({
+        next: a => this.matchedDriver = a,
+        error: e => { this.matchError = e.error.error; console.log(e); }
+      });
 
   }
 

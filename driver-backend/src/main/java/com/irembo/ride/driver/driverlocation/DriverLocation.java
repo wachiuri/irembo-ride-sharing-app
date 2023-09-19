@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DriverLocation {
 
+    private String id;
+
     private User user;
 
     private Double lat;
