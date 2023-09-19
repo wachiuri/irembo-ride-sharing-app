@@ -7,7 +7,7 @@ Java JDK version 17
 Nodejs version 14 and above  
 Apache maven  
 MySQL RDBMS  
-Apache kafka
+Apache kafka  
 Mongo db  
 
 # Installation
@@ -52,7 +52,8 @@ mvn install
 Run Apache kafka as instructed in it's documentation
 
 ## Administrative Backend
-Open the file administrative-backend\src\main\resources\application.properties. Modify the configurations according to your environment as described in the file  
+Create a schema in your MySQL database and configure it in this file accordingly.  
+Open the file administrative-backend\src\main\resources\application.properties. Modify the configurations according to your environment as described in the file.  
 Open the file administrative-backend\src\main\resources\spring.properties. Modify the db configurations according to your environment  
 ```
 cd administrative-backend
