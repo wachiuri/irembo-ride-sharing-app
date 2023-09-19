@@ -8,6 +8,7 @@ Nodejs version 14 and above
 Apache maven  
 MySQL RDBMS  
 Apache kafka
+Mongo db  
 
 # Installation
 

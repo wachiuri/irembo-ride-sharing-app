@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.irembo.ride.trip.configuration.websocket.ApplicationWebSocketHandler;
 import com.irembo.ride.trip.driverlocation.DriverLocation;
+import com.irembo.ride.trip.driverlocation.DriverLocationRepository;
 import com.irembo.ride.trip.driverlocation.DriverLocationService;
 import com.irembo.ride.trip.websocket.WebsocketMessage;
 import com.uber.h3core.H3Core;
@@ -36,6 +37,9 @@ public class RequestService {
 
     @Autowired
     private ApplicationWebSocketHandler webSocketHandler;
+
+    @Autowired
+    private DriverLocationRepository driverLocationRepository;
 
     private final Map<String, List<DriverLocation>> rejected = new HashMap<>();
 
@@ -84,6 +88,63 @@ public class RequestService {
 
             String address = h3Core.latLngToCellAddress(request.getDepartureLatitude(), request.getDepartureLongitude(), 1);
 
+            return driverLocationRepository.findByCellAddress(address)
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
+                    .switchIfEmpty(
+                            Flux.fromIterable(h3Core.gridDiskDistances(address, 1))
+                                    .reduce((d1, d2) -> {
+                                        d1.addAll(d2);
+                                        return d1;
+                                    })
+                                    .flatMapMany(a -> driverLocationRepository.findByCellAddressIn(a))
+                    )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
+                    .switchIfEmpty(
+                            Flux.fromIterable(h3Core.gridDiskDistances(address, 2))
+                                    .reduce((d1, d2) -> {
+                                        d1.addAll(d2);
+                                        return d1;
+                                    })
+                                    .flatMapMany(a -> driverLocationRepository.findByCellAddressIn(a))
+                    )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
+                    .switchIfEmpty(
+                            Flux.fromIterable(h3Core.gridDiskDistances(address, 3))
+                                    .reduce((d1, d2) -> {
+                                        d1.addAll(d2);
+                                        return d1;
+                                    })
+                                    .flatMapMany(a -> driverLocationRepository.findByCellAddressIn(a))
+                    )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
+                    .switchIfEmpty(
+                            Flux.fromIterable(h3Core.gridDiskDistances(address, 4))
+                                    .reduce((d1, d2) -> {
+                                        d1.addAll(d2);
+                                        return d1;
+                                    })
+                                    .flatMapMany(a -> driverLocationRepository.findByCellAddressIn(a))
+                    )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
+                    .switchIfEmpty(
+                            Flux.fromIterable(h3Core.gridDiskDistances(address, 5))
+                                    .reduce((d1, d2) -> {
+                                        d1.addAll(d2);
+                                        return d1;
+                                    })
+                                    .flatMapMany(a -> driverLocationRepository.findByCellAddressIn(a))
+                    )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
+                    .reduce((d1, d2) -> {
+                                log.trace("reduce d1 {} d2 {}", d1, d2);
+                                DriverLocation matched = this.shortestDistance(request, d1, d2);
+
+                                return matched;
+                            }
+                    )
+                    ;
+/*
+
             log.trace("address {}", address);
             Flux<DriverLocation> drivers = driverLocationService.list().flatMap(d -> Flux.fromIterable(d.values()));
             return drivers
@@ -92,6 +153,7 @@ public class RequestService {
                         log.trace("d {}", d);
                         return d.getCellAddress().equals(address);
                     })
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
                     .switchIfEmpty(
                             drivers.filter(d -> {
                                 List<List<String>> inVicinity1 = h3Core.gridDiskDistances(address, 1);
@@ -101,6 +163,7 @@ public class RequestService {
                                 return inVicinity1.stream().anyMatch(inVicinityList -> inVicinityList.contains(d.getCellAddress()));
                             })
                     )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
                     .switchIfEmpty(
                             drivers.filter(d -> {
                                 List<String> inVicinity2 = h3Core.gridDisk(address, 2);
@@ -109,6 +172,7 @@ public class RequestService {
                                 return inVicinity2.contains(d.getCellAddress());
                             })
                     )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
                     .switchIfEmpty(
                             drivers.filter(d -> {
                                 List<String> inVicinity3 = h3Core.gridDisk(address, 3);
@@ -117,6 +181,7 @@ public class RequestService {
                                 return inVicinity3.contains(d.getCellAddress());
                             })
                     )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
                     .switchIfEmpty(
                             drivers.filter(d -> {
                                 List<String> inVicinity4 = h3Core.gridDisk(address, 4);
@@ -125,6 +190,7 @@ public class RequestService {
                                 return inVicinity4.contains(d.getCellAddress());
                             })
                     )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
                     .switchIfEmpty(
                             drivers.filter(d -> {
                                 List<String> inVicinity5 = h3Core.gridDisk(address, 5);
@@ -133,6 +199,7 @@ public class RequestService {
                                 return inVicinity5.contains(d.getCellAddress());
                             })
                     )
+                    .filter(d -> !(rejected.containsKey(request.getId()) && rejected.get(request.getId()).contains(d)))
                     .reduce((d1, d2) -> {
                                 log.trace("reduce d1 {} d2 {}", d1, d2);
                                 DriverLocation matched = this.shortestDistance(request, d1, d2);
@@ -141,7 +208,7 @@ public class RequestService {
                             }
                     )
                     ;
-
+*/
 
         } catch (IOException e) {
             throw new RuntimeException(e);

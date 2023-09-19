@@ -56,8 +56,7 @@ public class KafkaConfiguration {
             DriverLocation driverLocation = objectMapper.convertValue(websocketMessage.getData(), DriverLocation.class);
             applicationWebSocketHandler.write(in);
 
-            driverLocationService.getDriverLocations()
-                    .put(driverLocation.getUser().getId(), driverLocation);
+            driverLocationService.save(driverLocation).subscribe(a->log.trace("saved driverLocation {}", a));
 
         } catch (JsonProcessingException e) {
             log.error("JsonProcessingException", e);
